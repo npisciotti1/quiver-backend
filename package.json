@@ -1,0 +1,24 @@
+{
+  "name": "quiver",
+  "version": "1.0.0",
+  "description": "The \"Quiver\" App for Bands and Venues",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/npisciotti1/quiver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/npisciotti1/quiver/issues"
+  },
+  "homepage": "https://github.com/npisciotti1/quiver#readme"
+}

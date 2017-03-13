@@ -1,2 +1,2 @@
 # quiver
-Quiver App for Bands and Venues
+ The "Quiver" App for Bands and Venues
