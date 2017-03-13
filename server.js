@@ -17,6 +17,10 @@ mongoose.connect(process.env.MONGODB_URI);
 app.use(cors());
 app.use(morgan('dev'));
 
+app.get('/', (req, res) => {
+  res.send('this worked');
+});
+
 app.listen(PORT, () => {
   debug(`Port up: ${PORT}`);
 });
