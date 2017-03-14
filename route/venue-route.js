@@ -1,6 +1,6 @@
 'use strict';
 
-const jsonParser = require('body-parser')json();
+const jsonParser = require('body-parser').json();
 const debug = require('debug')('quiver:venue-route');
 const Router = require('express').Router;
 const bearerAuth = require('../lib/bearer-auth-middleware.js');
