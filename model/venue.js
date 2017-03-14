@@ -3,6 +3,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+//lolz delete me
+
 const venueSchema = Schema({
   name: { type: String, required: true, unique: true },
   address: { type: String, required: true, unique: true },
