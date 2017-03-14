@@ -1,6 +1,6 @@
 'use strict';
 
-const jsonParser = require('body-parser')json();
+const jsonParser = require('body-parser').json();
 const debug = require('debug')('quiver:user-route');
 const Router = require('express').Router;
 const basicAuth = require('../lib/basic-auth-middleware.js');
