@@ -74,5 +74,61 @@ describe('USER ROUTES --', function() {
         });
       });
     });
+
+    describe('with an invalid password', function() {
+      before( done => {
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then ( user => user.save())
+        .then ( user => {
+          this.tempUser = user;
+          done();
+        })
+        .catch(done);
+      });
+
+      after ( done => {
+        User.remove({})
+        .then( () => done())
+        .catch(done);
+      });
+      it('should return a 401 error', done => {
+        // console.log('this.tempuser:', this.tempUser);
+        request.get(`${url}/api/signin`)
+        .auth('weasel', 'bad password')
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        })
+      })
+    })
+
+    describe('with an invalid username', function() {
+      before( done => {
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then ( user => user.save())
+        .then ( user => {
+          this.tempUser = user;
+          done();
+        })
+        .catch(done);
+      });
+
+      after ( done => {
+        User.remove({})
+        .then( () => done())
+        .catch(done);
+      });
+      it('should return a 400 error', done => {
+        request.get(`${url}/api/signin`)
+        .auth('fakeUser', 'bruh')
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+
   });
 });

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "DEBUG='quiver*', mocha"
+    "test": "DEBUG='quiver*' mocha"
   },
   "repository": {
     "type": "git",

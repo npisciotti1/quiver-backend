@@ -31,5 +31,5 @@ userRouter.get('/api/signin', basicAuth, function(req, res, next) {
   .then( user => user.comparePasswordHash(req.auth.password))
   .then( user => user.generateToken())
   .then( token => res.send(token))
-  .catch( () => next(createError(400, 'bad request')));
+  .catch( (err) => next(createError(err.status, err.message)));
 });
