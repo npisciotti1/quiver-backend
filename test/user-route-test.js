@@ -42,9 +42,32 @@ describe('USER ROUTES --', function() {
         });
       });
     });
+
+    describe('with an invalid route', function() {
+      it('should return a 404 error', done => {
+        request.post(`${url}/api/willIsABigDummy`)
+        .send(exampleUser)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+
+    describe('with an invalid body', function() {
+      it('should return a 400 error', done => {
+        request.post(`${url}/api/signup`)
+        .send('wrong!')
+        .end( (err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
   });
 
   describe ('for GET routes in USER', function() {
+
     describe('with valid basic-auth:', function() {
       before( done => {
         let user = new User(exampleUser);
@@ -130,5 +153,15 @@ describe('USER ROUTES --', function() {
       });
     });
 
+    describe('with an invalid route', function() {
+      it('should return a 404 error', done => {
+        request.get(`${url}/api/badroute`)
+        .auth('bad request')
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        })
+      })
+    });
   });
 });

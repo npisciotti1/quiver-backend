@@ -13,6 +13,10 @@ const userRouter = module.exports = Router();
 userRouter.post('/api/signup', jsonParser, function(req, res, next) {
   debug('POST: /api/signup');
 
+  if(!req.body.username || (!req.body.password)){
+    return next(createError(400, 'bad request'));
+  }
+
   let password = req.body.password;
   delete req.body.password;
 
@@ -28,6 +32,10 @@ userRouter.get('/api/signin', basicAuth, function(req, res, next) {
   debug('GET: /api/signin');
 
   User.findOne({ username: req.auth.username })
+  .then( user => {
+    if( user === null ) return Promise.reject(createError(400, 'bad request'))
+    return user;
+  })
   .then( user => user.comparePasswordHash(req.auth.password))
   .then( user => user.generateToken())
   .then( token => res.send(token))
