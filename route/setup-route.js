@@ -37,7 +37,7 @@ setupRouter.put('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, 
 
   Setup.findByIdAndUpdate(req.params.setupID, req.body, {new: true})
   .then ( setup => {
-    if (setup.venueID.toString() !== req.params.venueID.toString() {
+    if (setup.venueID.toString() !== req.params.venueID.toString()) {
       return next(createError(401, 'invalid user'));
     }
     if (!req.body) {
