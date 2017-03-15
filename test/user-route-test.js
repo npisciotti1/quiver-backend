@@ -68,7 +68,6 @@ describe('USER ROUTES --', function() {
         request.get(`${url}/api/signin`)
         .auth('weasel', 'bruh')
         .end((err, res) => {
-          console.log('this is my err', err);
           if (err) return done(err);
           expect(res.status).to.equal(200);
           done();
