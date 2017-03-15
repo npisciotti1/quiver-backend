@@ -26,6 +26,7 @@ function s3uploadProm(params) {
     s3.upload(params, (err, s3data) => {
       resolve(s3data);
     });
+    reject(createError(400, 'bad request'));
   });
 }
 
@@ -34,11 +35,11 @@ picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), fu
 
   if(!req.file) {
     return next(createError(400, 'file not found'));
-  };
+  }
 
   if(!req.file.path) {
     return next(createError(500, 'file not saved'));
-  };
+  }
 
   let ext = path.extname(req.file.originalname);
 
@@ -60,7 +61,7 @@ picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), fu
       imageURI: s3data.Location,
       userID: req.user_id,
       venueID: req.params.venueID
-    }
+    };
     return new Pic(picData).save();
   })
   .then( pic => res.json(pic))
