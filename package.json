@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "DEBUG='quiver*', mocha"
+    "test": "DEBUG='quiver*' mocha"
   },
   "repository": {
     "type": "git",
@@ -22,25 +22,26 @@
   },
   "homepage": "https://github.com/npisciotti1/quiver#readme",
   "dependencies": {
+    "aws-sdk": "^2.28.0",
     "bcrypt": "^1.0.2",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "cors": "^2.8.1",
-    "debug": "^2.6.2",
+    "debug": "^2.6.3",
     "del": "^2.2.2",
     "dotenv": "^4.0.0",
     "express": "^4.15.2",
     "http-errors": "^1.6.1",
     "jsonwebtoken": "^7.3.0",
-    "mongoose": "^4.8.7",
+    "mongoose": "^4.9.0",
     "morgan": "^1.8.1",
     "multer": "^1.3.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.12.0",
-    "mocha": "^3.2.0",
     "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
     "superagent": "^3.5.0"
   }
 }
