@@ -10,7 +10,7 @@ const Promise = require('bluebird');
 const debug = require('debug')('quiver:user');
 
 const userSchema = Schema({
-  userName: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   isArtist: { type: Boolean, required: true },
@@ -32,9 +32,9 @@ userSchema.methods.generatePasswordHash = function(password) {
 userSchema.methods.comparePasswordHash = function(password) {
   debug('comparePasswordHash');
 
-  return new Promise((reject, resolve) => {
+  return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password, (err, valid) => {
-      if(err) reject(err);
+      if(err) return reject(err);
       if(!valid) return reject(createError(401, 'wrong password'));
       resolve(this);
     });

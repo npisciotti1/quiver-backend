@@ -19,18 +19,18 @@ const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
   username: 'weasel',
   password: 'bruh',
-  email: 'testing@test.com'
+  email: 'testing@test.com',
+  isArtist: true
 };
 
 describe('USER ROUTES --', function() {
   describe('for POST routes in USER-', function() {
-    after( done => {
-      User.remove({})
-      .then( () => done())
-      .catch(done);
-    });
-
-    describe('should return passing tests for:', function() {
+    describe('should return a user:', function() {
+      after( done => {
+        User.remove({})
+        .then( () => done())
+        .catch(done);
+      });
       it('successfully posting information.', done => {
         request.post(`${url}/api/signup`)
         .send(exampleUser)
@@ -45,7 +45,7 @@ describe('USER ROUTES --', function() {
   });
 
   describe ('for GET routes in USER', function() {
-    describe('should return passing tests for:', function() {
+    describe('with valid basic-auth:', function() {
       before( done => {
         let user = new User(exampleUser);
         user.generatePasswordHash(exampleUser.password)
@@ -59,14 +59,16 @@ describe('USER ROUTES --', function() {
 
       after ( done => {
         User.remove({})
-        .then( () => done)
+        .then( () => done())
         .catch(done);
       });
 
-      it('successfully returned token', done=> {
+      it('should return a token', done => {
+        // console.log('this.tempUser', this.tempUser);
         request.get(`${url}/api/signin`)
         .auth('weasel', 'bruh')
         .end((err, res) => {
+          console.log('this is my err', err);
           if (err) return done(err);
           expect(res.status).to.equal(200);
           done();
