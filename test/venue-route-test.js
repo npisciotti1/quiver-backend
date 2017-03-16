@@ -70,5 +70,20 @@ describe('Venue Route Test', function() {
         });
       });
     });
+
+    describe('With a valid route and invalid body', () => {
+      it('should return a 400 error', done => {
+        console.log('this is our temp token', this.tempToken);
+        request.post(`${url}/api/venue`)
+        .send('this was dumb')
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
   });
 });
