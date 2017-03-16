@@ -24,9 +24,11 @@ const picRouter = module.exports = Router();
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, s3data) => {
+      console.log('===========================');
+      console.log('IN THE UPLOAD OF S3', s3data);
       resolve(s3data);
     });
-    reject(createError(400, 'bad request'));
+    // reject(createError(400, 'SOMTIN DIFFERENT BAD request'));
   });
 }
 
@@ -49,14 +51,15 @@ picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), fu
     Key: `${req.file.filename}${ext}`,
     Body: fs.createReadStream(req.file.path)
   };
-
+// console.log('is we here params', params);
   Venue.findById(req.params.venueID)
   .then( () => s3uploadProm(params))
   .then( s3data => {
     del([`${dataDir}/*`]);
+    console.log('in the findbyid pic');
     let picData = {
       name: req.body.name,
-      desc: req.body.desc,
+      description: req.body.description,
       objectKey: s3data.Key,
       imageURI: s3data.Location,
       userID: req.user_id,
