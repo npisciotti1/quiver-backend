@@ -1,6 +1,6 @@
 'use strict';
 
-require('./lib/test-env.js');
+// require('./lib/test-env.js');
 
 const expect = require('chai').expect;
 const request = require('superagent');
@@ -43,7 +43,7 @@ describe('Venue Route Test', function() {
       .then( user => user.save())
       .then( user => {
         this.tempUser = user;
-        exampleVenue.userID = this.tempUser._id.toString()
+        exampleVenue.userID = this.tempUser._id.toString();
         return user.generateToken();
       })
       .then( token => {
@@ -84,6 +84,10 @@ describe('Venue Route Test', function() {
           done();
         });
       });
+    });
+
+    describe('With an invalid route and valid body', () => {
+
     });
   });
 });
