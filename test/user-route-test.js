@@ -1,16 +1,14 @@
 'use strict';
 
-// require('./lib/test-env.js');
-
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
+const Promise = require('bluebird');
+
 const User = require('../model/user.js');
 
-
+const server = require('../server.js');
 const url = `http://localhost:${process.env.PORT}`;
-
-require('../server.js');
 
 const exampleUser = {
   username: 'weasel',
@@ -118,9 +116,9 @@ describe('USER ROUTES --', function() {
         .end((err, res) => {
           expect(res.status).to.equal(401);
           done();
-        });
-      });
-    });
+        })
+      })
+    })
 
     describe('with an invalid username', function() {
       before( done => {
@@ -156,8 +154,8 @@ describe('USER ROUTES --', function() {
         .end((err, res) => {
           expect(res.status).to.equal(404);
           done();
-        });
-      });
+        })
+      })
     });
   });
 });
