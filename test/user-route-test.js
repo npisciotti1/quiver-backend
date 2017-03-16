@@ -16,7 +16,7 @@ const exampleUser = {
   username: 'weasel',
   password: 'bruh',
   email: 'testing@test.com',
-  isVenue: true
+  isArtist: true
 };
 
 describe('USER ROUTES --', function() {

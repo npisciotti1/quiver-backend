@@ -17,7 +17,7 @@ const exampleUser = {
   username: 'example user',
   password: 'example password',
   email: 'test@test.com',
-  isVenue: true
+  isArtist: true
 };
 
 const exampleVenue = {
