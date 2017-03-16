@@ -71,14 +71,6 @@ describe('setup route tests', function() {
         .catch(done);
       });
 
-      // before( done => {
-      //   exampleSetup.venueID = this.tempVenue._id;
-      //   new Setup(exampleSetup)
-      //   .save()
-      //   .then( () => done())
-      //   .catch(done);
-      // })
-
       it('should return a setup', (done) => {
         request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
         .send(exampleSetup)
@@ -92,6 +84,80 @@ describe('setup route tests', function() {
           expect(res.status).to.equal(200);
           expect(res.body.setup).to.be.an('object');
           expect(res.body.venueID.toString()).to.equal(this.tempVenue._id.toString());
+          done();
+        });
+      });
+    });
+
+    describe('with a valid route and an invalid body', function() {
+      before( done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save() )
+        .then( user => {
+          this.tempUser = user;
+          exampleVenue.userID = this.tempUser._id;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before( done => {
+        new Venue(exampleVenue).save()
+        .then( venue => {
+          this.tempVenue = venue;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return a 400 error', done => {
+        request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
+        .send()
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+
+    describe('with an invalid ID and a valid body', function() {
+      before( done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save() )
+        .then( user => {
+          this.tempUser = user;
+          exampleVenue.userID = this.tempUser._id;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before( done => {
+        new Venue(exampleVenue).save()
+        .then( venue => {
+          this.tempVenue = venue;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return a 400 error', done => {
+        request.post(`${url}/api/venue/invalidID/setup/`)
+        .send(exampleSetup)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
           done();
         });
       });
