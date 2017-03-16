@@ -11,7 +11,7 @@ const Promise = require('bluebird');
 const User = require('../model/user.js');
 // const debug = require('debug')('quiver:user-route-test');
 
-mongoose.Promise = Promise;
+// mongoose.Promise = Promise;
 
 const server = require('../server.js');
 const url = `http://localhost:${process.env.PORT}`;
