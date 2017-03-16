@@ -1,20 +1,16 @@
 'use strict';
 
-require('./lib/test-env.js');
+// require('./lib/test-env.js');
 
-// const awsMocks = require('./lib/aws-mocks.js');
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
-const Promise = require('bluebird');
-// const serverToggle = require('./lib/server-toggle.js');
 const User = require('../model/user.js');
-// const debug = require('debug')('quiver:user-route-test');
 
-mongoose.Promise = Promise;
 
-const server = require('../server.js');
 const url = `http://localhost:${process.env.PORT}`;
+
+require('../server.js');
 
 const exampleUser = {
   username: 'weasel',
@@ -42,9 +38,32 @@ describe('USER ROUTES --', function() {
         });
       });
     });
+
+    describe('with an invalid route', function() {
+      it('should return a 404 error', done => {
+        request.post(`${url}/api/willIsABigDummy`)
+        .send(exampleUser)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+
+    describe('with an invalid body', function() {
+      it('should return a 400 error', done => {
+        request.post(`${url}/api/signup`)
+        .send('wrong!')
+        .end( (err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
   });
 
   describe ('for GET routes in USER', function() {
+
     describe('with valid basic-auth:', function() {
       before( done => {
         let user = new User(exampleUser);
@@ -99,9 +118,9 @@ describe('USER ROUTES --', function() {
         .end((err, res) => {
           expect(res.status).to.equal(401);
           done();
-        })
-      })
-    })
+        });
+      });
+    });
 
     describe('with an invalid username', function() {
       before( done => {
@@ -130,5 +149,15 @@ describe('USER ROUTES --', function() {
       });
     });
 
+    describe('with an invalid route', function() {
+      it('should return a 404 error', done => {
+        request.get(`${url}/api/badroute`)
+        .auth('bad request')
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
   });
 });

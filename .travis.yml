@@ -1,7 +1,7 @@
 language: node_js
 node_js:
   - 'stable'
-service:
+services:
   - mongodb
 addons:
   apt:
