@@ -1,17 +1,12 @@
 'use strict';
 
-// require('./lib/test-env.js');
+require('./lib/test-env.js');
 
-// const awsMocks = require('./lib/aws-mocks.js');
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
-// const serverToggle = require('./lib/server-toggle.js');
 const User = require('../model/user.js');
-// const debug = require('debug')('quiver:user-route-test');
-
-// mongoose.Promise = Promise;
 
 const server = require('../server.js');
 const url = `http://localhost:${process.env.PORT}`;
@@ -20,7 +15,7 @@ const exampleUser = {
   username: 'weasel',
   password: 'bruh',
   email: 'testing@test.com',
-  isArtist: true
+  isVenue: true
 };
 
 describe('USER ROUTES --', function() {
