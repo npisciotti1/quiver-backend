@@ -28,7 +28,7 @@ function s3uploadProm(params) {
       console.log('IN THE UPLOAD OF S3', s3data);
       resolve(s3data);
     });
-    // reject(createError(400, 'SOMTIN DIFFERENT BAD request'));
+    reject(createError(400, 'test message'));
   });
 }
 

@@ -6,6 +6,7 @@ const expect = require('chai').expect;
 const request = require('superagent');
 const debug = require('debug')('quiver:pic-route-test');
 // const awsMocks = require('./lib/aws-mocks.js');
+const dotenv = require('dotenv');
 
 
 const Pic = require('../model/pic.js');
@@ -14,6 +15,8 @@ const Setup = require('../model/setup.js');
 const Venue = require('../model/venue.js');
 // const ServerToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
+
+dotenv.load();
 
 const url = `http://localhost:${process.env.PORT}`;
 
@@ -99,7 +102,8 @@ describe('PICS MODULE --', function() {
       });
 
       it('successfully returning a pic.', done => {
-        console.log('this is our token', this.tempToken);
+        console.log('=========================');
+        console.log('this is our examplePic', examplePic);
         request.post(`${url}/api/venue/${this.tempVenue._id}/pic`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -109,7 +113,6 @@ describe('PICS MODULE --', function() {
         .attach('image', examplePic.image)
         .end((err, res) => {
           if (err) return done(err);
-
           // console.log('location', aws.uploadMock.Location);
           console.log('pic url is:', res.body.imageURI);
           expect(res.body.name).to.equal(examplePic.name);

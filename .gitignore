@@ -10,6 +10,7 @@ yarn-error.log*
 
 ###
 .env
+trst/lib/test-env.js
 
 # Runtime data
 pids
@@ -62,7 +63,7 @@ typings/
 
 # dotenv environment variables file
 .env
-
+./test/lib/test-env.js
 
 ### OSX ###
 *.DS_Store
@@ -112,5 +113,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
 
 # End of https://www.gitignore.io/api/osx,windows,node
