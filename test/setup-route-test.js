@@ -231,6 +231,8 @@ describe('setup route tests', function() {
           done();
         });
       });
+
     });
+
   });
 });
