@@ -32,18 +32,18 @@ setupRouter.get('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, 
   .catch(next);
 });
 
-setupRouter.put('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, res, next) {
-  debug('PUT /api/venue/:venueID/setup/:setupID');
-
-  Setup.findByIdAndUpdate(req.params.setupID, req.body, {new: true})
-  .then ( setup => {
-    if (setup.venueID.toString() !== req.params.venueID.toString()) {
-      return next(createError(401, 'invalid user'));
-    }
-    if (!req.body) {
-      return next(createError(400, 'bad request'));
-    }
-    res.json(setup);
-  })
-  .catch(next);
-});
+// setupRouter.put('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, res, next) {
+//   debug('PUT /api/venue/:venueID/setup/:setupID');
+//
+//   Setup.findByIdAndUpdate(req.params.setupID, req.body, {new: true})
+//   .then ( setup => {
+//     if (setup.venueID.toString() !== req.params.venueID.toString()) {
+//       return next(createError(401, 'invalid user'));
+//     }
+//     if (!req.body) {
+//       return next(createError(400, 'bad request'));
+//     }
+//     res.json(setup);
+//   })
+//   .catch(next);
+// });
