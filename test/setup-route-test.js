@@ -218,9 +218,6 @@ describe('setup route tests', function() {
 
       it('should return a setup', (done) => {
 
-        console.log('===========================');
-        console.log(this.tempToken);
-        console.log('===========================');
         request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
         .send(exampleSetup)
         .set({
@@ -230,6 +227,7 @@ describe('setup route tests', function() {
           if(err) return done(err);
           expect(res.status).to.equal(200);
           expect(res.body.venueID.toString()).to.equal(this.tempVenue._id.toString());
+          expect(res.body.setup).to.be.an('object');
           done();
         });
       });
