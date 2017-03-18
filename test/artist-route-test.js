@@ -7,7 +7,7 @@ const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Artist = require('../model/artist.js');
 
-const url = `http://localhost:3000`;
+const url = `http://localhost:${process.env.PORT}`;
 
 require('../server.js');
 
