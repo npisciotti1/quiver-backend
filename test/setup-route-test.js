@@ -35,47 +35,44 @@ const exampleSetup = {
 };
 
 describe('setup route tests', function() {
-  // after(done => {
-  //   Setup.remove({});
-  //   done();
-  // })
-  // .catch(done);
+  afterEach( done => {
+    Promise.all([
+      User.remove({}),
+      Venue.remove({}),
+      // Setup.remove({})
+    ])
+    .then( () => done() )
+    .catch(done);
+  });
+
   describe('POST: /api/venue/:venueID/setup', function() {
-    afterEach( done => {
-      Promise.all([
-        User.remove({}),
-        Venue.remove({}),
-      ])
-      .then( () => done() )
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save() )
+      .then( user => {
+        this.tempUser = user;
+        exampleVenue.userID = this.tempUser._id;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
       .catch(done);
     });
-    describe('with a valid body', function() {
-      before( done => {
-        new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then( user => user.save() )
-        .then( user => {
-          this.tempUser = user;
-          exampleVenue.userID = this.tempUser._id;
-          return user.generateToken();
-        })
-        .then( token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
 
-      before( done => {
-        new Venue(exampleVenue).save()
-        .then( venue => {
-          this.tempVenue = venue;
-          done();
-        })
-        .catch(done);
-      });
+    before( done => {
+      new Venue(exampleVenue).save()
+      .then( venue => {
+        this.tempVenue = venue;
+        done();
+      })
+      .catch(done);
+    });
 
-      it('should return a setup', (done) => {
+    describe('with a valid body', () => {
+      it('should return a setup', done => {
         request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
         .send(exampleSetup)
         .set({
@@ -93,30 +90,7 @@ describe('setup route tests', function() {
       });
     });
 
-    describe('with a valid route and an invalid body', function() {
-      before( done => {
-        new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then( user => user.save() )
-        .then( user => {
-          this.tempUser = user;
-          exampleVenue.userID = this.tempUser._id;
-          return user.generateToken();
-        })
-        .then( token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
-      before( done => {
-        new Venue(exampleVenue).save()
-        .then( venue => {
-          this.tempVenue = venue;
-          done();
-        })
-        .catch(done);
-      });
+    describe('with a valid route and an invalid body', () => {
       it('should return a 400 error', done => {
         request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
         .send()
@@ -130,30 +104,7 @@ describe('setup route tests', function() {
       });
     });
 
-    describe('with an invalid ID and a valid body', function() {
-      before( done => {
-        new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then( user => user.save() )
-        .then( user => {
-          this.tempUser = user;
-          exampleVenue.userID = this.tempUser._id;
-          return user.generateToken();
-        })
-        .then( token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
-      before( done => {
-        new Venue(exampleVenue).save()
-        .then( venue => {
-          this.tempVenue = venue;
-          done();
-        })
-        .catch(done);
-      });
+    describe('with an invalid ID and a valid body', () => {
       it('should return a 400 error', done => {
         request.post(`${url}/api/venue/invalidID/setup/`)
         .send(exampleSetup)
@@ -169,55 +120,49 @@ describe('setup route tests', function() {
   });
 
   describe('GET: /api/venue/:venueID/setup/:setupID', function() {
-    afterEach( done => {
-      delete exampleSetup.venueID;
-      Promise.all([
-        User.remove({}),
-        Venue.remove({})
-      ])
-      .then( () => done() )
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save() )
+      .then( user => {
+        this.tempUser = user;
+        exampleVenue.userID = this.tempUser._id;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
       .catch(done);
     });
 
-    describe('with a valid body', function() {
-      before( done => {
-        new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then( user => user.save() )
-        .then( user => {
-          this.tempUser = user;
-          exampleVenue.userID = this.tempUser._id;
-          return user.generateToken();
-        })
-        .then( token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
+    before( done => {
+      new Venue(exampleVenue).save()
+      .then( venue => {
+        this.tempVenue = venue;
+        exampleSetup.venueID = venue._id;
+        done();
+      })
+      .catch(done);
+    });
 
-      before( done => {
-        new Venue(exampleVenue).save()
-        .then( venue => {
-          this.tempVenue = venue;
-          exampleSetup.venueID = venue._id;
-          done();
-        })
-        .catch(done);
-      });
+    before( done => {
+      new Setup(exampleSetup)
+      .save()
+      .then( (setup) => {
+        this.tempSetup = setup;
+        done();
+      })
+      .catch(done);
+    });
 
-      before( done => {
-        new Setup(exampleSetup)
-        .save()
-        .then( (setup) => {
-          this.tempSetup = setup;
-          done();
-        })
-        .catch(done);
-      });
+    after( done => {
+      delete exampleSetup.venueID;
+      done();
+    });
 
-      it('should return a setup', (done) => {
-
+    describe('if test is passed:', () => {
+      it('successfully returned a SETUP', done => {
         request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
         .send(exampleSetup)
         .set({
@@ -231,8 +176,59 @@ describe('setup route tests', function() {
           done();
         });
       });
-
     });
 
+    // describe('wrong venue id', () => {
+    //   it('returns a 404 error', done => {
+    //     request.get(`${url}/api/venue/somethingwrong/setup/${this.tempSetup._id}`)
+    //     .send(exampleSetup)
+    //     .set({
+    //       Authorization: `Bearer ${this.tempToken}`
+    //     })
+    //     .end((err, res) => {
+    //       expect(res.status).to.equal(404);
+    //       done();
+    //     });
+    //   });
+    // });
+    //
+    // describe('wrong GET endpoint for SETUP', () => {
+    //   it('returns a 404 error', done => {
+    //     request.get(`${url}/api/venue/${this.tempVenue._id}/setup/NOPE`)
+    //     .send(exampleSetup)
+    //     .set({
+    //       Authorization: `Bearer ${this.tempToken}`
+    //     })
+    //     .end((err, res) => {
+    //       expect(res.status).to.equal(404);
+    //       done();
+    //     });
+    //   });
+    // });
+    //
+    // describe('bad body for SETUP', () => {
+    //   it('returns a 400 error', done => {
+    //     request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+    //     .send()
+    //     .set({
+    //       Authorization: `Bearer ${this.tempToken}`
+    //     })
+    //     .end((err, res) => {
+    //       expect(res.status).to.equal(400);
+    //       done();
+    //     });
+    //   });
+    // });
+
+    describe('not authorized for SETUP', () => {
+      it('returns a 401 error', done => {
+        request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+        .send(exampleSetup)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
   });
 });
