@@ -1,6 +1,6 @@
 'use strict';
 
-// require('./lib/test-env.js');
+require('./lib/test-env.js');
 
 const expect = require('chai').expect;
 const request = require('superagent');
@@ -9,9 +9,12 @@ const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Venue = require('../model/venue.js');
 
-const url = `http://localhost:${process.env.PORT}`;
+const awsMocks = require('./lib/aws-mocks.js');
 
 require('../server.js');
+
+const url = `http://localhost:${process.env.PORT}`;
+
 
 const exampleUser = {
   username: 'example user',

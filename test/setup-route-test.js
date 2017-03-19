@@ -1,5 +1,7 @@
 'use strict';
 
+require('./lib/test-env.js');
+
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
@@ -9,7 +11,10 @@ const User = require('../model/user.js');
 const Venue = require('../model/venue.js');
 const Setup = require('../model/setup.js');
 
+const awsMocks = require('./lib/aws-mocks.js');
+
 require('../server.js')
+
 const url = `http://localhost:${process.env.PORT}`;
 
 const exampleUser = {

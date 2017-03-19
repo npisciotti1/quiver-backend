@@ -1,8 +1,11 @@
 'use strict';
 
+require('./lib/test-env.js');
+
 const expect = require('chai').expect;
 const request = require('superagent');
 const debug = require('debug')('quiver:pic-route-test');
+const awsMocks = require('./lib/aws-mocks.js');
 
 const Pic = require('../model/pic.js');
 const User = require('../model/user.js');
@@ -85,6 +88,8 @@ describe('PIC ROUTE TESTS MODULE --', function() {
           expect(res.body.name).to.equal(examplePic.name);
           expect(res.body.description).to.equal(examplePic.description);
           expect(res.body.venueID).to.equal(this.tempVenue._id.toString());
+          expect(res.body.imageURI).to.equal(awsMocks.uploadMock.Location);
+          done();
         });
       });
     });

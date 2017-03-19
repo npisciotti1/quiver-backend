@@ -1,5 +1,7 @@
 'use strict';
 
+require('./lib/test-env.js');
+
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
@@ -7,9 +9,12 @@ const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Artist = require('../model/artist.js');
 
-const url = `http://localhost:3000`;
+const awsMocks = require('./lib/aws-mocks.js')
 
 require('../server.js');
+
+const url = `http://localhost:3000`;
+
 
 const exampleUser = {
   username: 'dope boy',
