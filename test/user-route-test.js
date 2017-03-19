@@ -22,8 +22,8 @@ const exampleUser = {
   isArtist: true
 };
 
-describe('USER ROUTES --', function() {
-  describe('for POST routes in USER-', function() {
+describe('THE USER ROUTES TEST MODULE =================================', function() {
+  describe('for POST routes in USER ------------------------------', function() {
     describe('should return a user:', function() {
       after( done => {
         User.remove({})
@@ -65,7 +65,7 @@ describe('USER ROUTES --', function() {
     });
   });
 
-  describe ('for GET routes in USER', function() {
+  describe ('for GET routes in USER ---------------------------', function() {
 
     describe('with valid basic-auth:', function() {
       before( done => {
@@ -86,7 +86,6 @@ describe('USER ROUTES --', function() {
       });
 
       it('should return a token', done => {
-        // console.log('this.tempUser', this.tempUser);
         request.get(`${url}/api/signin`)
         .auth('weasel', 'bruh')
         .end((err, res) => {
@@ -115,7 +114,6 @@ describe('USER ROUTES --', function() {
         .catch(done);
       });
       it('should return a 401 error', done => {
-        // console.log('this.tempuser:', this.tempUser);
         request.get(`${url}/api/signin`)
         .auth('weasel', 'bad password')
         .end((err, res) => {

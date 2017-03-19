@@ -27,7 +27,7 @@ const exampleArtist = {
   name: 'Shivvy'
 }
 
-describe('THE ARTIST ROUTES MODULE --', function() {
+describe('THE ARTIST ROUTES TEST MODULE ===============================', function() {
   afterEach( done => {
     Promise.all([
       User.remove({}),
@@ -37,7 +37,7 @@ describe('THE ARTIST ROUTES MODULE --', function() {
     .catch(done);
   });
 
-  describe('for POST routes in ARTIST -', function() {
+  describe('for POST routes in ARTIST -------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -112,7 +112,7 @@ describe('THE ARTIST ROUTES MODULE --', function() {
     });
   });
 
-  describe('for GET routes in ARTIST -', function() {
+  describe('for GET routes in ARTIST --------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)

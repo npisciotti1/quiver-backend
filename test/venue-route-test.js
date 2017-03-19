@@ -28,7 +28,7 @@ const exampleVenue = {
   address: '123 funktown'
 };
 
-describe('THE VENUE ROUTES MODULE --', function() {
+describe('THE VENUE ROUTES TESTS MODULE ===============================', function() {
   afterEach( done => {
     Promise.all([
       User.remove({}),
@@ -38,7 +38,7 @@ describe('THE VENUE ROUTES MODULE --', function() {
     .catch(done);
   });
 
-  describe('for POST routes in VENUE -', function() {
+  describe('for POST routes in VENUE ------------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -75,7 +75,6 @@ describe('THE VENUE ROUTES MODULE --', function() {
 
     describe('With a valid route and invalid body', () => {
       it('should return a 400 error', done => {
-        console.log('this is our temp token', this.tempToken);
         request.post(`${url}/api/venue`)
         .send('this was dumb')
         .set({
@@ -117,7 +116,7 @@ describe('THE VENUE ROUTES MODULE --', function() {
     });
   });
 
-  describe('for GET routes in VENUE -', function() {
+  describe('for GET routes in VENUE ----------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -184,7 +183,7 @@ describe('THE VENUE ROUTES MODULE --', function() {
     });
   });
 
-  describe('for PUT routes in VENUE -', function() {
+  describe('for PUT routes in VENUE -------------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -259,33 +258,68 @@ describe('THE VENUE ROUTES MODULE --', function() {
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
+      .send(newVenue)
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
       });
     });
 
-    // it('did not actually UPDATE the venue', done => {
-    //   let newVenue = { name: 'FLOW STATE', address: 'FEELS GREAT'};
-    //   request.get(`${url}/api/venue/${this.tempVenue._id}`)
-    //   .set({
-    //     Authorization: `Bearer ${this.tempToken}`
-    //   })
-    //   .send(exampleVenue)
-    //   .end((err, res) => {
-    //     if (err) return done(err);
-    //     expect(res.body.name).to.equal(exampleVenue.name);
-    //     exepct(res.body.address).to.equal(exampleVenue.address);
-    //     expect(res.body.userID).to.equal(this.tempUser._id.toString());
-    //     done();
-    //   });
-    // });
     it('was an unauthorized request', done => {
       let newVenue = { name: 'more', address: 'and MORE'};
       request.put(`${url}/api/venue/${this.tempVenue.id}`)
       .send(newVenue)
       .end((err, res) => {
         expect(res.status).to.equal(401);
+        done();
+      });
+    });
+  });
+
+  describe('for DELETE routes in VENUE ----------------------', function() {
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+    before( done => {
+      exampleVenue.userID = this.tempUser._id.toString();
+      new Venue(exampleVenue).save()
+      .then( venue => {
+        this.tempVenue = venue;
+        done();
+      })
+      .catch(done);
+    })
+
+    it('should successfully delete a venue', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).to.equal(204);
+        done();
+      });
+    });
+
+    it('invalid url, cannot delete', done => {
+      request.delete(`${url}/api/venue/THISISNOTRIGHT`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
         done();
       });
     });
