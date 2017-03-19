@@ -39,6 +39,14 @@ const exampleSetup = {
   }
 };
 
+const newSetup = {
+  setup: {
+    audio: {
+      instrument: 'saxophone'
+    }
+  }
+};
+
 describe('THE SETUP ROUTES TESTS MODULE ===============================', function() {
   afterEach( done => {
     Promise.all([
@@ -150,9 +158,8 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     before( done => {
-      new Setup(exampleSetup)
-      .save()
-      .then( (setup) => {
+      new Setup(exampleSetup).save()
+      .then( setup => {
         this.tempSetup = setup;
         done();
       })
@@ -161,6 +168,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
 
     after( done => {
       delete exampleSetup.venueID;
+      delete exampleVenue.userID;
       done();
     });
 
@@ -182,30 +190,16 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
 
     describe('wrong venue id in url', () => {
       it('returns an error', done => {
-        request.get(`${url}/api/venue/somethingwrong/setup/${this.tempSetup._id}`)
+        request.get(`${url}/api/venue/${this.tempVenue._id}/setup/NOPE`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
         .end((err, res) => {
-          expect(res.status).to.equal(401); // thought it should be a 404 but the test passed and it bumped up the overall coveralls percentage
+          expect(res.status).to.equal(404);
           done();
         });
       });
     });
-
-    // describe('wrong GET endpoint for SETUP', () => {
-    //   it('returns an error', done => {
-    //     request.get(`${url}/api/venue/${this.tempVenue._id}/setup/NOPE`)
-    //     .set({
-    //       Authorization: `Bearer ${this.tempToken}`
-    //     })
-    //     .end((err, res) => {
-    //       expect(res.status).to.equal(500);
-    //       done();
-    //     });
-    //   });
-    // });
-
 
     describe('not authorized for SETUP', () => {
       it('returns a 401 error', done => {
@@ -214,6 +208,65 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
           expect(res.status).to.equal(401);
           done();
         });
+      });
+    });
+  });
+
+  describe('for PUT routes in SETUP ------------------------', function() {
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleVenue.userID = this.tempUser._id.toString();
+      new Venue(exampleVenue).save()
+      .then( venue => {
+        this.tempVenue = venue;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleSetup.venueID = this.tempVenue._id.toString();
+      new Setup(exampleSetup).save()
+      .then( setup => {
+        this.tempSetup = setup;
+        done();
+      })
+      .catch(done);
+    });
+
+    after( done => {
+      delete exampleSetup.venueID;
+      delete exampleVenue.userID;
+      done();
+    });
+
+    it('for a successfully updated SETUP', done => {
+      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(newSetup)
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res.body.venueID).to.equal(this.tempVenue._id.toString());
+        expect(res.body.setup).to.be.an('object');
+        expect(res.body.setup).to.deep.equal(newSetup.setup);
+        done();
       });
     });
   });

@@ -209,19 +209,6 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
       .catch(done);
     });
 
-    after( done => {
-      if (this.tempUser) {
-        Promise.all([
-          User.remove({}),
-          Venue.remove({})
-        ])
-        .then( () => done())
-        .catch(done);
-        return;
-      }
-      done();
-    });
-
     it('will return an updated venue', done => {
       let newVenue = { name: 'ONTRACK', address: 'BEASTMODE'};
       request.put(`${url}/api/venue/${this.tempVenue._id}`)
