@@ -11,7 +11,7 @@ const Pic = require('../model/pic.js');
 const User = require('../model/user.js');
 const Venue = require('../model/venue.js');
 
-const url = `http://localhost:3000`;
+const url = `http://localhost:${process.env.PORT}`;
 
 const exampleUser = {
   username: 'billy bob',

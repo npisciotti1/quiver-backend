@@ -13,7 +13,7 @@ const awsMocks = require('./lib/aws-mocks.js')
 
 require('../server.js');
 
-const url = `http://localhost:3000`;
+const url = `http://localhost:${process.env.PORT}`;
 
 
 const exampleUser = {
