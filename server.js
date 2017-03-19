@@ -29,8 +29,9 @@ app.use(morgan('dev'));
 
 app.use(userRouter);
 app.use(venueRouter);
-app.use(setupRouter);
 app.use(artistRouter);
+app.use(setupRouter);
+app.use(picRouter);
 // app.use(picRouter);
 app.use(errors);
 

@@ -237,12 +237,13 @@ describe('THE VENUE ROUTES MODULE --', function() {
       });
     });
 
-    it('did not SEND the updated venue correctly', done => {
+    it('did not send the UPDATED venue correctly', done => {
       let newVenue = { name: 'BADBOY', address: 'IS A STRAIGHT TITAN'};
       request.put(`${url}/api/venue/${this.tempVenue._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
+      .send()
       .end((err, res) => {
         expect(res.body).to.equal(null);
         done();

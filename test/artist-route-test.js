@@ -7,7 +7,7 @@ const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Artist = require('../model/artist.js');
 
-const url = `http://localhost:${process.env.PORT}`;
+const url = `http://localhost:3000`;
 
 require('../server.js');
 
@@ -175,6 +175,113 @@ describe('THE ARTIST ROUTES MODULE --', function() {
         })
         .end((err, res) => {
           expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('PUT tests in ARTIST -', function() {
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleArtist.userID = this.tempUser._id.toString();
+      new Artist(exampleArtist).save()
+      .then( artist => {
+        this.tempArtist = artist;
+        done();
+      })
+      .catch(done);
+    });
+
+    after( done => {
+      delete exampleArtist.userID;
+      done();
+    });
+
+    describe('for a correctly updated ARTIST', () => {
+      it('will return happy tests', done => {
+        let newArtist = {name: 'newguy'};
+        request.put(`${url}/api/artist/${this.tempArtist._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send(newArtist)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.userID).to.equal(this.tempUser._id.toString());
+          expect(res.body.name).to.equal(newArtist.name);
+          done();
+        });
+      });
+    });
+
+    describe('', () => {
+      it('will return happy tests', done => {
+        let newArtist = {name: 'no fly zone'};
+        request.put(`${url}/api/artist/${this.tempArtist._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send()
+        .end((err, res) => {
+          expect(res.body).to.equal(null);
+          done();
+        });
+      });
+    });
+
+    describe('updated artist to WRONG ENDPOINT', () => {
+      it('will return a failed test', done => {
+        let newArtist = { name: 'giggity mcSploogenuts'};
+        request.put(`${url}/api/artist/spongebob`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send(newArtist)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+
+    describe('unauthorized PUT request in ARTIST', () => {
+      it('returns 401 error', done => {
+        let newArtist = { name: 'goku'}
+        request.put(`${url}/api/artist/${this.tempArtist._id}`)
+        .send(newArtist)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+
+    describe('artist user ID does not match', () => {
+      it('the user id', done => {
+        exampleArtist.userID = 'AINT RIGHT';
+        request.put(`${url}/api/artist/${this.tempArtist._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send(exampleArtist)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
           done();
         });
       });
