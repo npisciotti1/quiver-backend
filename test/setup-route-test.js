@@ -128,6 +128,18 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
         });
       });
     });
+
+    it('not authorized to post in setup', done => {
+      request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
+      .set({
+        Authorization: `not happening`
+      })
+      .send(exampleSetup)
+      .end( (err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
   });
 
   describe('for GET routes in SETUP ----------------------------', function() {
@@ -188,7 +200,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
       });
     });
 
-    describe('wrong venue id in url', () => {
+    describe('wrong setup id in url', () => {
       it('returns an error', done => {
         request.get(`${url}/api/venue/${this.tempVenue._id}/setup/NOPE`)
         .set({
@@ -201,7 +213,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
       });
     });
 
-    describe('not authorized for SETUP', () => {
+    describe('not authorized to get in SETUP', () => {
       it('returns a 401 error', done => {
         request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
         .end((err, res) => {
@@ -210,6 +222,18 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
         });
       });
     });
+
+    // it('setup id does not match', done=> {
+    //   exampleSetup.venueID = 'VAT IZ DIS'
+    //   request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+    //   .set({
+    //     Authorization: `Bearer ${this.tempToken}`
+    //   })
+    //   .end((err, res) => {
+    //     expect(res.status).to.equal(404);
+    //     done();
+    //   });
+    // });
   });
 
   describe('for PUT routes in SETUP ------------------------', function() {
@@ -266,6 +290,126 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
         expect(res.body.venueID).to.equal(this.tempVenue._id.toString());
         expect(res.body.setup).to.be.an('object');
         expect(res.body.setup).to.deep.equal(newSetup.setup);
+        done();
+      });
+    });
+
+    it('did not update setup', done => {
+      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body.setup).to.not.equal(newSetup.setup);
+        done();
+      });
+    });
+
+    it('sent to wrong endpoint', done=> {
+      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/YOUSHALLNOTPASS`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(newSetup)
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+
+    it('was an unauthorized request', done => {
+      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      .set({
+        Authorization: `look! a wild ratata has appeared`
+      })
+      .send(newSetup)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('venue ID does not match', done => {
+      newSetup.venueID = 'WRONG ONE';
+      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(newSetup)
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+  });
+
+  describe('for DELETE routes in SETUP -----------------------', function() {
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleVenue.userID = this.tempUser._id.toString();
+      new Venue(exampleVenue).save()
+      .then( venue => {
+        this.tempVenue = venue;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleSetup.venueID = this.tempVenue._id.toString();
+      new Setup(exampleSetup).save()
+      .then( setup => {
+        this.tempSetup = setup;
+        done();
+      })
+      .catch(done);
+    });
+
+    it('should successfully delete a setup', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(204);
+        done();
+      });
+    });
+
+    it('invalid end point', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}/setup/lame`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+
+    it('unauthorized delete request for SETUP', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      .set({
+        Authorization: `where is the love`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
         done();
       });
     });

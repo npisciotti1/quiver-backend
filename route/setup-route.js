@@ -34,3 +34,11 @@ setupRouter.put('/api/venue/:venueID/setup/:setupID', bearerAuth, jsonParser, fu
   .then( setup => res.json(setup) )
   .catch( () => next(createError(404, 'not found')));
 });
+
+setupRouter.delete('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/venue/:venueID/setup/:setupID');
+
+  Setup.findByIdAndRemove(req.params.setupID)
+  .then( () => res.status(204).send())
+  .catch( () => next(createError(404, 'not found')));
+});

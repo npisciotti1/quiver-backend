@@ -65,6 +65,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
         .end((err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
+          expect(res.body.name).to.be.a('string');
           expect(res.body.name).to.equal(exampleArtist.name);
           expect(res.body.userID).to.equal(this.tempUser._id.toString());
           done();
@@ -152,6 +153,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
         .end((err, res) => {
           if (err) return done(err);
           expect(res.status).to.equal(200);
+          expect(res.body.name).to.be.a('string');
           expect(res.body.name).to.equal(exampleArtist.name);
           expect(res.body.userID).to.equal(this.tempUser._id.toString());
           done();
@@ -186,7 +188,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
     });
   });
 
-  describe('PUT tests in ARTIST -', function() {
+  describe('PUT route tests in ARTIST --------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -229,14 +231,15 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
           if (err) return done(err);
           expect(res.status).to.equal(200);
           expect(res.body.userID).to.equal(this.tempUser._id.toString());
+          expect(res.body.name).to.be.a('string');
           expect(res.body.name).to.equal(newArtist.name);
           done();
         });
       });
     });
 
-    describe('', () => {
-      it('will return happy tests', done => {
+    describe('not updated artist', () => {
+      it('will not have the new artist info', done => {
         let newArtist = {name: 'no fly zone'};
         request.put(`${url}/api/artist/${this.tempArtist._id}`)
         .set({
@@ -279,16 +282,82 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
 
     describe('artist user ID does not match', () => {
       it('the user id', done => {
-        exampleArtist.userID = 'AINT RIGHT';
+        let newArtist = {name: 'nah son', userID: 'not goin down'}
         request.put(`${url}/api/artist/${this.tempArtist._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
-        .send(exampleArtist)
+        .send(newArtist)
         .end((err, res) => {
           expect(res.status).to.equal(404);
           done();
         });
+      });
+    });
+  });
+
+  describe('for DELETE routes in ARTIST -------------------', function() {
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    before( done => {
+      exampleArtist.userID = this.tempUser._id.toString();
+      new Artist(exampleArtist).save()
+      .then( artist => {
+        this.tempArtist = artist;
+        done();
+      })
+      .catch(done);
+    });
+
+    after( done => {
+      delete exampleArtist.userID;
+      done();
+    });
+
+    it('successfully deleting an artist', done => {
+      request.delete(`${url}/api/artist/${this.tempArtist._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(204);
+        done();
+      });
+    });
+
+    it('invalid end point for artist delete', done => {
+      request.delete(`${url}/api/artist/someonenotcreative`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+
+    it('not authorized to delete artist', done=> {
+      request.delete(`${url}/api/artist/${this.tempArtist._id}`)
+      .set({
+        Authorization: `not the realest`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
       });
     });
   });

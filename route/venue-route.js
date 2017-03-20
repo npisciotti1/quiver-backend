@@ -39,9 +39,9 @@ venueRouter.put('/api/venue/:id', bearerAuth, jsonParser, function(req, res, nex
   .catch( () => next(createError(404, 'not found')));
 });
 
-venueRouter.delete('/api/venue/:id', function(req, res, next) {
+venueRouter.delete('/api/venue/:id', bearerAuth, function(req, res, next) {
   debug('DELETE: /api/venue/:id');
-  
+
   Venue.findByIdAndRemove(req.params.id)
   .then( () => res.status(204).send())
   .catch( () => next(createError(404, 'not found')));

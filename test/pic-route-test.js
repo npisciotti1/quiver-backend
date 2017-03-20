@@ -168,4 +168,57 @@ describe('THE PIC ROUTES TESTS MODULE =====================================', fu
       });
     });
   });
+
+  // describe('for DELETE routes in PIC -----------------------', function() {
+  //   before( done => {
+  //     new User(exampleUser)
+  //     .generatePasswordHash(exampleUser.password)
+  //     .then( user => user.save())
+  //     .then( user => {
+  //       this.tempUser = user;
+  //       return user.generateToken();
+  //     })
+  //     .then ( token => {
+  //       this.tempToken = token;
+  //       done();
+  //     })
+  //     .catch(done);
+  //   });
+  //
+  //   before( done => {
+  //     exampleVenue.userID = this.tempUser._id.toString();
+  //     new Venue(exampleVenue).save()
+  //     .then( venue => {
+  //       this.tempVenue = venue;
+  //       done();
+  //     })
+  //     .catch(done);
+  //   });
+  //
+  //   before( done => {
+  //     new Pic(examplePic).save()
+  //     .then( pic => {
+  //       this.tempPic = pic;
+  //       done();
+  //     })
+  //     .catch(done);
+  //   });
+  //
+  //   after( done => {
+  //     delete exampleVenue.userID;
+  //     done();
+  //   });
+  //
+  //   it('no more doggo pic', done => {
+  //     request.delete(`${url}/api/venue/${this.tempVenue._id}/pic/${this.tempPic._id}`)
+  //     .set({
+  //       Authorization: `Bearer ${this.tempToken}`
+  //     })
+  //     .end((err, res) => {
+  //       if(err) return done(err);
+  //       expect(res.status).to.equal(204);
+  //       done();
+  //     });
+  //   })
+  // });
 });

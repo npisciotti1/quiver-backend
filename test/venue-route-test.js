@@ -255,9 +255,25 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
     it('was an unauthorized request', done => {
       let newVenue = { name: 'more', address: 'and MORE'};
       request.put(`${url}/api/venue/${this.tempVenue.id}`)
+      .set({
+        Authorization: `no fly zone`
+      })
       .send(newVenue)
       .end((err, res) => {
         expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('did not send the UPDATED venue correctly', done => {
+      let newVenue = { name: 'underpantsman', address: 'is inappropriate', userID: 'giggity'};
+      request.put(`${url}/api/venue/${this.tempVenue._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(newVenue)
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
         done();
       });
     });
@@ -307,6 +323,17 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
       })
       .end((err, res) => {
         expect(res.status).to.equal(404);
+        done();
+      });
+    });
+
+    it('not authorized to delete', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}`)
+      .set({
+        Authorization: `y u no like dis venue`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
         done();
       });
     });

@@ -4,6 +4,7 @@ const jsonParser = require('body-parser').json();
 const debug = require('debug')('quiver:user-route');
 const Router = require('express').Router;
 const basicAuth = require('../lib/basic-auth-middleware.js');
+const bearerAuth = require('../lib/bearer-auth-middleware.js');
 const createError = require('http-errors');
 
 const User = require('../model/user.js');
@@ -41,3 +42,21 @@ userRouter.get('/api/signin', basicAuth, function(req, res, next) {
   .then( token => res.send(token))
   .catch( (err) => next(createError(err.status, err.message)));
 });
+
+// userRouter.put('/api/user', bearerAuth, function(req, res, next) {
+//   debug('PUT: /api/user');
+//
+//   User.findByIdAndUpdate(req.user._id, req.body, { new: true})
+//   .then( user => res.json(user) )
+//   .catch( () => next(createError(404, 'not found')))
+// });
+
+userRouter.delete('/api/user', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/user');
+
+  User.findByIdAndRemove(req.user._id)
+  .then( () => {
+    return next(res.status(204).send());
+  })
+  .catch( (err) => next(createError(404, 'not found')));
+})

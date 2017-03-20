@@ -22,14 +22,22 @@ const exampleUser = {
   isArtist: true
 };
 
+const newUser = {
+  username: 'weasel',
+  password: 'bruh',
+  email: 'shabazz@lovesjazz.com',
+  isArtist: true
+};
+
 describe('THE USER ROUTES TEST MODULE =================================', function() {
   describe('for POST routes in USER ------------------------------', function() {
-    describe('should return a user:', function() {
-      after( done => {
-        User.remove({})
-        .then( () => done())
-        .catch(done);
-      });
+    afterEach( done => {
+      User.remove({})
+      .then( () => done())
+      .catch(done);
+    });
+
+    describe('should return a user:', () => {
       it('successfully posting information.', done => {
         request.post(`${url}/api/signup`)
         .send(exampleUser)
@@ -42,7 +50,7 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
       });
     });
 
-    describe('with an invalid route', function() {
+    describe('with an invalid route', () => {
       it('should return a 404 error', done => {
         request.post(`${url}/api/willIsABigDummy`)
         .send(exampleUser)
@@ -53,7 +61,7 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
       });
     });
 
-    describe('with an invalid body', function() {
+    describe('with an invalid body', () => {
       it('should return a 400 error', done => {
         request.post(`${url}/api/signup`)
         .send('wrong!')
@@ -66,25 +74,24 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
   });
 
   describe ('for GET routes in USER ---------------------------', function() {
+    before( done => {
+      let user = new User(exampleUser);
+      user.generatePasswordHash(exampleUser.password)
+      .then ( user => user.save())
+      .then ( user => {
+        this.tempUser = user;
+        done();
+      })
+      .catch(done);
+    });
 
-    describe('with valid basic-auth:', function() {
-      before( done => {
-        let user = new User(exampleUser);
-        user.generatePasswordHash(exampleUser.password)
-        .then ( user => user.save())
-        .then ( user => {
-          this.tempUser = user;
-          done();
-        })
-        .catch(done);
-      });
+    after ( done => {
+      User.remove({})
+      .then( () => done())
+      .catch(done);
+    });
 
-      after ( done => {
-        User.remove({})
-        .then( () => done())
-        .catch(done);
-      });
-
+    describe('with valid basic-auth:', () => {
       it('should return a token', done => {
         request.get(`${url}/api/signin`)
         .auth('weasel', 'bruh')
@@ -96,23 +103,7 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
       });
     });
 
-    describe('with an invalid password', function() {
-      before( done => {
-        let user = new User(exampleUser);
-        user.generatePasswordHash(exampleUser.password)
-        .then ( user => user.save())
-        .then ( user => {
-          this.tempUser = user;
-          done();
-        })
-        .catch(done);
-      });
-
-      after ( done => {
-        User.remove({})
-        .then( () => done())
-        .catch(done);
-      });
+    describe('with an invalid password', () => {
       it('should return a 401 error', done => {
         request.get(`${url}/api/signin`)
         .auth('weasel', 'bad password')
@@ -123,23 +114,7 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
       })
     })
 
-    describe('with an invalid username', function() {
-      before( done => {
-        let user = new User(exampleUser);
-        user.generatePasswordHash(exampleUser.password)
-        .then ( user => user.save())
-        .then ( user => {
-          this.tempUser = user;
-          done();
-        })
-        .catch(done);
-      });
-
-      after ( done => {
-        User.remove({})
-        .then( () => done())
-        .catch(done);
-      });
+    describe('with an invalid username', () => {
       it('should return a 400 error', done => {
         request.get(`${url}/api/signin`)
         .auth('fakeUser', 'bruh')
@@ -157,8 +132,106 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
         .end((err, res) => {
           expect(res.status).to.equal(404);
           done();
-        })
+        });
+      });
+    });
+  });
+
+  describe('PUT route tests for USER -------------------------', function() {
+    before ( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then ( user => user.save())
+      .then ( user => {
+        this.tempUser = user;
+        return user.generateToken();
       })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    after ( done => {
+      User.remove({})
+      .then( () => done())
+      .catch(done);
+    });
+
+    // describe('correctly updated USER', () => {
+    //   it('will return a 201', done => {
+    //     request.put(`${url}/api/user`)
+    //     .send({ email: 'shivvysmalls@gonnaball.com'})
+    //     .set({
+    //       Authorization: `Bearer ${this.tempToken}`
+    //     })
+    //     .end((err, res) => {
+    //       if (err) return done(err);
+    //       expect(res.status).to.equal(200);
+    //       expect(res.body._id).to.equal(this.tempUser._id.toString())
+    //       expect(res.body.username).to.equal(exampleUser.username);
+    //       // expect(res.body.email).to.equal('shivvysmalls@gonnaball.com');
+    //       done();
+    //     });
+    //   });
+    // });
+  });
+
+  describe('DELETE route tests for USER ---------------------', function() {
+    before ( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then ( user => user.save())
+      .then ( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+
+    after ( done => {
+      User.remove({})
+      .then( () => done())
+      .catch(done);
+    });
+
+    it('successfully deleting a user', done => {
+      request.delete(`${url}/api/user`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(204);
+        done();
+      });
+    });
+
+    it('wrong endpoint for deleting a user', done => {
+      request.delete(`${url}/api/notauser`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+
+    it('wrong endpoint for deleting a user', done => {
+      request.delete(`${url}/api/user`)
+      .set({
+        Authorization: `not authorized`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
     });
   });
 });
