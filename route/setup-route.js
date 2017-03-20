@@ -23,27 +23,22 @@ setupRouter.get('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, 
   debug('GET: /api/venue/:venueID/setup/:setupID');
 
   Setup.findById(req.params.setupID)
-  .then( setup => {
-    if (setup.venueID.toString() !== req.params.venueID.toString()) {
-      return next(createError(401, 'invalid user'));
-    }
-    res.json(setup);
-  })
-  .catch(next);
+  .then( setup => res.json(setup) )
+  .catch( () => next(createError(404, 'not found')));
 });
 
-setupRouter.put('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, res, next) {
+setupRouter.put('/api/venue/:venueID/setup/:setupID', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT /api/venue/:venueID/setup/:setupID');
 
-  Setup.findByIdAndUpdate(req.params.setupID, req.body, {new: true})
-  .then ( setup => {
-    if (setup.venueID.toString() !== req.params.venueID.toString()) {
-      return next(createError(401, 'invalid user'));
-    }
-    if (!req.body) {
-      return next(createError(400, 'bad request'));
-    }
-    res.json(setup);
-  })
-  .catch(next);
+  Setup.findByIdAndUpdate(req.params.setupID, req.body, { new: true})
+  .then( setup => res.json(setup) )
+  .catch( () => next(createError(404, 'not found')));
+});
+
+setupRouter.delete('/api/venue/:venueID/setup/:setupID', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/venue/:venueID/setup/:setupID');
+
+  Setup.findByIdAndRemove(req.params.setupID)
+  .then( () => res.status(204).send())
+  .catch( () => next(createError(404, 'not found')));
 });

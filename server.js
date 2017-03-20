@@ -12,24 +12,29 @@ const morgan = require('morgan');
 
 const userRouter = require('./route/user-route.js');
 const venueRouter = require('./route/venue-route.js');
+const artistRouter = require('./route/artist-route.js');
 const setupRouter = require('./route/setup-route.js');
 const picRouter = require('./route/pic-route.js');
 const errors = require('./lib/error-middleware.js');
 
 dotenv.load();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 mongoose.connect(process.env.MONGODB_URI);
+
+let morganFormat = process.env.PRODUCTION ? 'common' : 'dev';
 
 app.use(cors());
 app.use(morgan('dev'));
 
 app.use(userRouter);
 app.use(venueRouter);
-app.use(setupRouter);
 app.use(picRouter);
+app.use(artistRouter);
+app.use(setupRouter);
+// app.use(picRouter);
 app.use(errors);
 
 app.get('/', (req, res) => {

@@ -56,10 +56,10 @@ picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), fu
     del([`${dataDir}/*`]);
     let picData = {
       name: req.body.name,
-      desc: req.body.desc,
+      description: req.body.description,
       objectKey: s3data.Key,
       imageURI: s3data.Location,
-      userID: req.user_id,
+      userID: req.user._id,
       venueID: req.params.venueID
     };
     return new Pic(picData).save();
@@ -67,3 +67,11 @@ picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), fu
   .then( pic => res.json(pic))
   .catch( err => next(err));
 });
+// 
+// picRouter.delete('api/venue/:venueID/pic/:picID', bearerAuth, function(req, res, next) {
+//   debug('DELETE: /api/venue/venueID/pic/:picID');
+//
+//   pic.findbyIdAndRemove(req.params.picID)
+//   .then( () => res.status(204).send())
+//   .catch( () => next(createError(404, 'not found')));
+// })
