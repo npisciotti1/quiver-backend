@@ -30,3 +30,19 @@ artistRouter.get('/api/artist/:artistID', bearerAuth, function(req, res, next) {
   .then( artist => res.json(artist) )
   .catch( () => next(createError(404, 'not found')) );
 });
+
+artistRouter.put('/api/artist/:artistID', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT: /api/artist/:artistID');
+
+  Artist.findByIdAndUpdate(req.params.artistID, req.body, { new: true})
+  .then( artist => res.json(artist) )
+  .catch( () => next(createError(404, 'not found')));
+});
+
+artistRouter.delete('/api/artist/:artistID', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/artist/:artistID');
+
+  Artist.findByIdAndRemove(req.params.artistID)
+  .then( () => res.status(204).send())
+  .catch( () => next(createError(404, 'not found')));
+});

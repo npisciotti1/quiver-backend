@@ -1,6 +1,6 @@
 'use strict';
 
-// require('./lib/test-env.js');
+require('./lib/test-env.js');
 
 const expect = require('chai').expect;
 const request = require('superagent');
@@ -9,9 +9,12 @@ const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Venue = require('../model/venue.js');
 
-const url = `http://localhost:${process.env.PORT}`;
+const awsMocks = require('./lib/aws-mocks.js');
 
 require('../server.js');
+
+const url = `http://localhost:${process.env.PORT}`;
+
 
 const exampleUser = {
   username: 'example user',
@@ -25,7 +28,7 @@ const exampleVenue = {
   address: '123 funktown'
 };
 
-describe('THE VENUE ROUTES MODULE --', function() {
+describe('THE VENUE ROUTES TESTS MODULE ===============================', function() {
   afterEach( done => {
     Promise.all([
       User.remove({}),
@@ -35,7 +38,7 @@ describe('THE VENUE ROUTES MODULE --', function() {
     .catch(done);
   });
 
-  describe('for POST routes in VENUE -', function() {
+  describe('for POST routes in VENUE ------------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -72,7 +75,6 @@ describe('THE VENUE ROUTES MODULE --', function() {
 
     describe('With a valid route and invalid body', () => {
       it('should return a 400 error', done => {
-        console.log('this is our temp token', this.tempToken);
         request.post(`${url}/api/venue`)
         .send('this was dumb')
         .set({
@@ -114,7 +116,7 @@ describe('THE VENUE ROUTES MODULE --', function() {
     });
   });
 
-  describe('for GET routes in VENUE -', function() {
+  describe('for GET routes in VENUE ----------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -181,7 +183,7 @@ describe('THE VENUE ROUTES MODULE --', function() {
     });
   });
 
-  describe('for PUT routes in VENUE -', function() {
+  describe('for PUT routes in VENUE -------------------------------', function() {
     before( done => {
       new User(exampleUser)
       .generatePasswordHash(exampleUser.password)
@@ -207,19 +209,6 @@ describe('THE VENUE ROUTES MODULE --', function() {
       .catch(done);
     });
 
-    after( done => {
-      if (this.tempUser) {
-        Promise.all([
-          User.remove({}),
-          Venue.remove({})
-        ])
-        .then( () => done())
-        .catch(done);
-        return;
-      }
-      done();
-    });
-
     it('will return an updated venue', done => {
       let newVenue = { name: 'ONTRACK', address: 'BEASTMODE'};
       request.put(`${url}/api/venue/${this.tempVenue._id}`)
@@ -237,12 +226,13 @@ describe('THE VENUE ROUTES MODULE --', function() {
       });
     });
 
-    it('did not SEND the updated venue correctly', done => {
+    it('did not send the UPDATED venue correctly', done => {
       let newVenue = { name: 'BADBOY', address: 'IS A STRAIGHT TITAN'};
       request.put(`${url}/api/venue/${this.tempVenue._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
+      .send()
       .end((err, res) => {
         expect(res.body).to.equal(null);
         done();
@@ -255,31 +245,93 @@ describe('THE VENUE ROUTES MODULE --', function() {
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
+      .send(newVenue)
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
       });
     });
 
-    // it('did not actually UPDATE the venue', done => {
-    //   let newVenue = { name: 'FLOW STATE', address: 'FEELS GREAT'};
-    //   request.get(`${url}/api/venue/${this.tempVenue._id}`)
-    //   .set({
-    //     Authorization: `Bearer ${this.tempToken}`
-    //   })
-    //   .send(exampleVenue)
-    //   .end((err, res) => {
-    //     if (err) return done(err);
-    //     expect(res.body.name).to.equal(exampleVenue.name);
-    //     exepct(res.body.address).to.equal(exampleVenue.address);
-    //     expect(res.body.userID).to.equal(this.tempUser._id.toString());
-    //     done();
-    //   });
-    // });
     it('was an unauthorized request', done => {
       let newVenue = { name: 'more', address: 'and MORE'};
       request.put(`${url}/api/venue/${this.tempVenue.id}`)
+      .set({
+        Authorization: `no fly zone`
+      })
       .send(newVenue)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
+
+    it('did not send the UPDATED venue correctly', done => {
+      let newVenue = { name: 'underpantsman', address: 'is inappropriate', userID: 'giggity'};
+      request.put(`${url}/api/venue/${this.tempVenue._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .send(newVenue)
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+  });
+
+  describe('for DELETE routes in VENUE ----------------------', function() {
+    before( done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+    before( done => {
+      exampleVenue.userID = this.tempUser._id.toString();
+      new Venue(exampleVenue).save()
+      .then( venue => {
+        this.tempVenue = venue;
+        done();
+      })
+      .catch(done);
+    })
+
+    it('should successfully delete a venue', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).to.equal(204);
+        done();
+      });
+    });
+
+    it('invalid url, cannot delete', done => {
+      request.delete(`${url}/api/venue/THISISNOTRIGHT`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+
+    it('not authorized to delete', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}`)
+      .set({
+        Authorization: `y u no like dis venue`
+      })
       .end((err, res) => {
         expect(res.status).to.equal(401);
         done();

@@ -29,12 +29,26 @@ Let's sign in as an existing user! GET:
 ```/api/signin```
 
 #### Venue
-Would you like to join our community as a new venue? POST to this url endpoint.
+Would you like to join our community as a new venue? POST to this url endpoint:
 ```/api/venue/```
-Would you like to GET the information for a specific venue? This is the endpoint for you.
+Would you like to GET the information for a specific venue? This is the endpoint for you:
 ```api/venue/:id```
-Need to update any information? PUT to this point.
+Need to update any information? PUT to this point:
 ```api/venue/:id```
+No longer jamming at a venue? DELETE here:
+```api/venue/:id```
+
+
+##### Artist
+POST:
+```/api/artist/```
+GET:
+```api/artist/:id```
+PUT:
+```api/artist/:id```
+DELETE:
+```api/artist/:id```
+
 ##### Setup
 POST:
 ```/api/venue/:venueID/setup```
@@ -42,6 +56,12 @@ GET:
 ```/api/venue/:venueID/setup/:setupID```
 PUT:
 ```/api/venue/:venueID/setup/:setupID```
+DELETE:
+```/api/venue/:venueID/setup/:setupID```
+
+#### Pic
+POST::
+```/api/venue/:venueID/pic```
 
 #### SO WHO ARE WE?
 Nikko: I’m a full-stack Javascript developer with a passion for technologies that  communicate. I build dynamic platforms for producers to reach their markets. With over 10 years in service-industry experience and management, I bring a consumer-based focus to development. (Also, to have a little fun with it).
