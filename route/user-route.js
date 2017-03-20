@@ -43,13 +43,13 @@ userRouter.get('/api/signin', basicAuth, function(req, res, next) {
   .catch( (err) => next(createError(err.status, err.message)));
 });
 
-// userRouter.put('/api/user', bearerAuth, function(req, res, next) {
-//   debug('PUT: /api/user');
-//
-//   User.findByIdAndUpdate(req.user._id, req.body, { new: true})
-//   .then( user => res.json(user) )
-//   .catch( () => next(createError(404, 'not found')))
-// });
+userRouter.put('/api/user', bearerAuth, function(req, res, next) {
+  debug('PUT: /api/user');
+
+  User.findByIdAndUpdate(req.user._id, req.body, { new: true})
+  .then( user => res.json(user) )
+  .catch( () => next(createError(404, 'not found')))
+});
 
 userRouter.delete('/api/user', bearerAuth, function(req, res, next) {
   debug('DELETE: /api/user');
