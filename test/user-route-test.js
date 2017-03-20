@@ -23,8 +23,8 @@ const exampleUser = {
 };
 
 const newUser = {
-  username: 'weasel',
-  password: 'bruh',
+  username: 'shazam',
+  password: 'epiphany',
   email: 'shabazz@lovesjazz.com',
   isArtist: true
 };
@@ -153,29 +153,64 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
       .catch(done);
     });
 
+    before ( done => {
+      new User(newUser)
+      .generatePasswordHash(newUser.password)
+      .then ( user => user.save())
+      .then ( user => {
+        this.tempUserNew = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempTokenNew = token;
+        done();
+      })
+      .catch(done);
+    });
+
     after ( done => {
       User.remove({})
       .then( () => done())
       .catch(done);
     });
 
-    // describe('correctly updated USER', () => {
-    //   it('will return a 201', done => {
-    //     request.put(`${url}/api/user`)
-    //     .send({ email: 'shivvysmalls@gonnaball.com'})
-    //     .set({
-    //       Authorization: `Bearer ${this.tempToken}`
-    //     })
-    //     .end((err, res) => {
-    //       if (err) return done(err);
-    //       expect(res.status).to.equal(200);
-    //       expect(res.body._id).to.equal(this.tempUser._id.toString())
-    //       expect(res.body.username).to.equal(exampleUser.username);
-    //       // expect(res.body.email).to.equal('shivvysmalls@gonnaball.com');
-    //       done();
-    //     });
-    //   });
-    // });
+    describe('correctly updated USER', () => {
+      it('will return passing tests', done => {
+        request.put(`${url}/api/user`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send(newUser)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          done();
+        });
+      });
+    });
+
+    describe('wrong user endpoint in PUT', () => {
+      it('will return 404 error', done => {
+        request.put(`${url}/api/CUDDLYKITTENFAIR`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send(newUser)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+
+    it('not authorized to update user', done => {
+      request.put(`${url}/api/user`)
+      .send(newUser)
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+    });
   });
 
   describe('DELETE route tests for USER ---------------------', function() {
