@@ -23,10 +23,14 @@ npm i
 ## OUR MODELS
 
 #### User
-Let's make a new User! POST:
+POST:
 ```/api/signup```
-Let's sign in as an existing user! GET:
+GET:
 ```/api/signin```
+PUT:
+```/api/user```
+DELETE:
+```/api/user```
 
 #### Venue
 Would you like to join our community as a new venue? POST to this url endpoint:
@@ -64,9 +68,10 @@ POST::
 ```/api/venue/:venueID/pic```
 
 #### SO WHO ARE WE?
-Nikko: I’m a full-stack Javascript developer with a passion for technologies that  communicate. I build dynamic platforms for producers to reach their markets. With over 10 years in service-industry experience and management, I bring a consumer-based focus to development. (Also, to have a little fun with it).
-About: Will is a Full stack Javascript developer and who enjoys using new technology to find the creative and elegant solutions.
 Shiv: Shiv is a software engineer and business consultant with an expertise in starts ups that is on the journey to find the intersection point between technology, art, and logic to create everlasting progressive changes and inspiration.
+Nikko: I’m a full-stack Javascript developer with a passion for technologies that  communicate. I build dynamic platforms for producers to reach their markets. With over 10 years in service-industry experience and management, I bring a consumer-based focus to development. (Also, to have a little fun with it).
+Will: A Full stack Javascript developer and who enjoys using new technology to find the creative and elegant solutions.
+
 
 #### Built Using:
 -"Express" - (expressjs.com)
