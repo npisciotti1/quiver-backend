@@ -24,6 +24,7 @@ const picRouter = module.exports = Router();
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, s3data) => {
+      console.log('got s3UploadProm', s3data);
       resolve(s3data);
     });
     reject(createError(400, 'bad request'));
@@ -32,6 +33,8 @@ function s3uploadProm(params) {
 
 picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), function(req, res, next) {
   debug('POST /api/venue/:venueID/pic');
+
+  console.log('we hit our route');
 
   if(!req.file) {
     return next(createError(400, 'file not found'));
@@ -67,11 +70,12 @@ picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), fu
   .then( pic => res.json(pic))
   .catch( err => next(err));
 });
-// 
-// picRouter.delete('api/venue/:venueID/pic/:picID', bearerAuth, function(req, res, next) {
-//   debug('DELETE: /api/venue/venueID/pic/:picID');
-//
-//   pic.findbyIdAndRemove(req.params.picID)
-//   .then( () => res.status(204).send())
-//   .catch( () => next(createError(404, 'not found')));
-// })
+
+picRouter.delete('api/venue/:venueID/pic/:picID', bearerAuth, function(req, res, next) {
+  debug('DELETE: /api/venue/venueID/pic/:picID');
+  console.log('we hit our DELETE route');
+
+  Pic.findbyIdAndRemove(req.params.picID)
+  .then( () => res.status(204).send())
+  .catch( () => next(createError(404, 'not found')));
+});

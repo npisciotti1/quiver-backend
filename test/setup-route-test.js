@@ -1,7 +1,5 @@
 'use strict';
 
-require('./lib/test-env.js');
-
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
@@ -11,9 +9,9 @@ const User = require('../model/user.js');
 const Venue = require('../model/venue.js');
 const Setup = require('../model/setup.js');
 
-const awsMocks = require('./lib/aws-mocks.js');
+// const awsMocks = require('./lib/aws-mocks.js');
 
-require('../server.js')
+require('../server.js');
 
 const url = `http://localhost:${process.env.PORT}`;
 
@@ -52,7 +50,6 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     Promise.all([
       User.remove({}),
       Venue.remove({}),
-      // Setup.remove({})
     ])
     .then( () => done() )
     .catch(done);
@@ -132,7 +129,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     it('not authorized to post in setup', done => {
       request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
       .set({
-        Authorization: `not happening`
+        Authorization: 'not happening'
       })
       .send(exampleSetup)
       .end( (err, res) => {
@@ -222,18 +219,6 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
         });
       });
     });
-
-    // it('setup id does not match', done=> {
-    //   exampleSetup.venueID = 'VAT IZ DIS'
-    //   request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
-    //   .set({
-    //     Authorization: `Bearer ${this.tempToken}`
-    //   })
-    //   .end((err, res) => {
-    //     expect(res.status).to.equal(404);
-    //     done();
-    //   });
-    // });
   });
 
   describe('for PUT routes in SETUP ------------------------', function() {
@@ -321,7 +306,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     it('was an unauthorized request', done => {
       request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
       .set({
-        Authorization: `look! a wild ratata has appeared`
+        Authorization: 'look! a wild ratata has appeared'
       })
       .send(newSetup)
       .end((err, res) => {
@@ -406,7 +391,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     it('unauthorized delete request for SETUP', done => {
       request.delete(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
       .set({
-        Authorization: `where is the love`
+        Authorization: 'where is the love'
       })
       .end((err, res) => {
         expect(res.status).to.equal(401);

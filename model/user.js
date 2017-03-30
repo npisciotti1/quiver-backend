@@ -60,7 +60,7 @@ userSchema.methods.generateFindHash = function() {
         tries++;
         _generateFindHash.call(this);
       });
-    };
+    }
   });
 };
 

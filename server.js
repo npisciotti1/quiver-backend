@@ -1,7 +1,5 @@
 'use strict';
 
-// one line test for travis
-
 const express = require('express');
 const debug = require('debug')('quiver:server');
 const Promise = require('bluebird');
@@ -27,14 +25,14 @@ mongoose.connect(process.env.MONGODB_URI);
 let morganFormat = process.env.PRODUCTION ? 'common' : 'dev';
 
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan(morganFormat));
 
 app.use(userRouter);
 app.use(venueRouter);
 app.use(picRouter);
 app.use(artistRouter);
 app.use(setupRouter);
-// app.use(picRouter);
+app.use(picRouter);
 app.use(errors);
 
 app.get('/', (req, res) => {
