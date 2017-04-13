@@ -29,8 +29,8 @@ userRouter.post('/api/signup', jsonParser, function(req, res, next) {
   .catch(next);
 });
 
-userRouter.get('/api/signin', basicAuth, function(req, res, next) {
-  debug('GET: /api/signin');
+userRouter.get('/api/login', basicAuth, function(req, res, next) {
+  debug('GET: /api/login');
 
   User.findOne({ username: req.auth.username })
   .then( user => {

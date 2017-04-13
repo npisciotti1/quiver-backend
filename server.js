@@ -11,7 +11,7 @@ const morgan = require('morgan');
 const userRouter = require('./route/user-route.js');
 const venueRouter = require('./route/venue-route.js');
 const artistRouter = require('./route/artist-route.js');
-const setupRouter = require('./route/setup-route.js');
+const gearRouter = require('./route/gear-route.js');
 const picRouter = require('./route/pic-route.js');
 const errors = require('./lib/error-middleware.js');
 
@@ -31,7 +31,7 @@ app.use(userRouter);
 app.use(venueRouter);
 app.use(picRouter);
 app.use(artistRouter);
-app.use(setupRouter);
+app.use(gearRouter);
 app.use(picRouter);
 app.use(errors);
 

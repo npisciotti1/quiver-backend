@@ -1,5 +1,5 @@
 {
-  "name": "quiver",
+  "name": "Quiver-App-Backend",
   "version": "1.0.0",
   "description": "The \"Quiver\" App for Bands and Venues",
   "main": "server.js",
