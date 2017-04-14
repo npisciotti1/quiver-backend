@@ -1,7 +1,5 @@
 'use strict';
 
-require('./lib/test-env.js');
-
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
@@ -9,7 +7,7 @@ const Promise = require('bluebird');
 const User = require('../model/user.js');
 const Artist = require('../model/artist.js');
 
-const awsMocks = require('./lib/aws-mocks.js')
+// const awsMocks = require('./lib/aws-mocks.js');
 
 require('../server.js');
 
@@ -25,13 +23,13 @@ const exampleUser = {
 
 const exampleArtist = {
   name: 'Shivvy'
-}
+};
 
 describe('THE ARTIST ROUTES TEST MODULE ===============================', function() {
   afterEach( done => {
     Promise.all([
-      User.remove({}),
-      Artist.remove({})
+      Artist.remove({}),
+      User.remove({})
     ])
     .then( () => done())
     .catch(done);
@@ -58,10 +56,10 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
     describe('while making a valid POST', () => {
       it('should post an artist object.', done => {
         request.post(`${url}/api/artist`)
-        .send(exampleArtist)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
+        .send(exampleArtist)
         .end((err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
@@ -92,7 +90,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
         request.post(`${url}/api/artist`)
         .send(exampleArtist)
         .set({
-          Authorization: `nah son`
+          Authorization: 'nah son'
         })
         .end((err, res) => {
           expect(res.status).to.equal(401);
@@ -178,7 +176,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
       it('should return 401 error', done => {
         request.get(`${url}/api/artist/${this.tempArtist._id}`)
         .set({
-          Authorization: `NOT HAPPENING BABY`
+          Authorization: 'NOT HAPPENING BABY'
         })
         .end((err, res) => {
           expect(res.status).to.equal(401);
@@ -240,7 +238,6 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
 
     describe('not updated artist', () => {
       it('will not have the new artist info', done => {
-        let newArtist = {name: 'no fly zone'};
         request.put(`${url}/api/artist/${this.tempArtist._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -255,7 +252,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
 
     describe('updated artist to WRONG ENDPOINT', () => {
       it('will return a failed test', done => {
-        let newArtist = { name: 'giggity mcSploogenuts'};
+        let newArtist = { name: 'john'};
         request.put(`${url}/api/artist/spongebob`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -270,7 +267,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
 
     describe('unauthorized PUT request in ARTIST', () => {
       it('returns 401 error', done => {
-        let newArtist = { name: 'goku'}
+        let newArtist = { name: 'goku'};
         request.put(`${url}/api/artist/${this.tempArtist._id}`)
         .send(newArtist)
         .end((err, res) => {
@@ -282,7 +279,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
 
     describe('artist user ID does not match', () => {
       it('the user id', done => {
-        let newArtist = {name: 'nah son', userID: 'not goin down'}
+        let newArtist = {name: 'nah son', userID: 'not goin down'};
         request.put(`${url}/api/artist/${this.tempArtist._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -353,7 +350,7 @@ describe('THE ARTIST ROUTES TEST MODULE ===============================', functi
     it('not authorized to delete artist', done=> {
       request.delete(`${url}/api/artist/${this.tempArtist._id}`)
       .set({
-        Authorization: `not the realest`
+        Authorization: 'not the realest'
       })
       .end((err, res) => {
         expect(res.status).to.equal(401);

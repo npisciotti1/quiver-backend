@@ -1,6 +1,6 @@
 'use strict';
 
-// one line test for travis
+//comment to test
 
 const express = require('express');
 const debug = require('debug')('quiver:server');
@@ -13,7 +13,7 @@ const morgan = require('morgan');
 const userRouter = require('./route/user-route.js');
 const venueRouter = require('./route/venue-route.js');
 const artistRouter = require('./route/artist-route.js');
-const setupRouter = require('./route/setup-route.js');
+const gearRouter = require('./route/gear-route.js');
 const picRouter = require('./route/pic-route.js');
 const errors = require('./lib/error-middleware.js');
 
@@ -27,14 +27,14 @@ mongoose.connect(process.env.MONGODB_URI);
 let morganFormat = process.env.PRODUCTION ? 'common' : 'dev';
 
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan(morganFormat));
 
 app.use(userRouter);
 app.use(venueRouter);
 app.use(picRouter);
 app.use(artistRouter);
-app.use(setupRouter);
-// app.use(picRouter);
+app.use(gearRouter);
+app.use(picRouter);
 app.use(errors);
 
 app.get('/', (req, res) => {

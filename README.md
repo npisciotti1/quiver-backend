@@ -10,7 +10,7 @@ As a performing artist, a very frustrating problem can often occur. When prepari
 
 
 #### BUILD:
-Using NodeJS/Express/MongoDB, created an API that will serve a front-end application that allows Bars and Venues to create a profile that will display their house PA. Each ‘venue’ model will have its own correlating ‘setup’ model that houses all their listed gear. Venues will have the option of modifying and adding gear at any time. Users (artists) can view the listed gear in preparation for a show.
+Using NodeJS/Express/MongoDB, created an API that will serve a front-end application that allows Bars and Venues to create a profile that will display their house PA. Each ‘venue’ model will have its own correlating ‘gear’ model that houses all their listed gear. Venues will have the option of modifying and adding gear at any time. Users (artists) can view the listed gear in preparation for a show.
 
 Please, enjoy yourself and play around around with our APIs as you would like, we have left everything as open source in order for all to enjoy and benefit from.
 
@@ -26,7 +26,7 @@ npm i
 POST:
 ```/api/signup```
 GET:
-```/api/signin```
+```/api/login```
 PUT:
 ```/api/user```
 DELETE:
@@ -53,15 +53,15 @@ PUT:
 DELETE:
 ```api/artist/:id```
 
-##### Setup
+##### Gear
 POST:
-```/api/venue/:venueID/setup```
+```/api/venue/:venueID/gear```
 GET:
-```/api/venue/:venueID/setup/:setupID```
+```/api/venue/:venueID/gear/:gearID```
 PUT:
-```/api/venue/:venueID/setup/:setupID```
+```/api/venue/:venueID/gear/:gearID```
 DELETE:
-```/api/venue/:venueID/setup/:setupID```
+```/api/venue/:venueID/gear/:gearID```
 
 #### Pic
 POST::

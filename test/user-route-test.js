@@ -1,7 +1,5 @@
 'use strict';
 
-require('./lib/test-env.js');
-
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
@@ -9,7 +7,7 @@ const Promise = require('bluebird');
 
 const User = require('../model/user.js');
 
-const awsMocks = require('./lib/aws-mocks.js');
+// const awsMocks = require('./lib/aws-mocks.js');
 
 require('../server.js');
 
@@ -93,7 +91,7 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
 
     describe('with valid basic-auth:', () => {
       it('should return a token', done => {
-        request.get(`${url}/api/signin`)
+        request.get(`${url}/api/login`)
         .auth('weasel', 'bruh')
         .end((err, res) => {
           if (err) return done(err);
@@ -105,7 +103,7 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
 
     describe('with an invalid password', () => {
       it('should return a 401 error', done => {
-        request.get(`${url}/api/signin`)
+        request.get(`${url}/api/login`)
         .auth('weasel', 'bad password')
         .end((err, res) => {
           expect(res.status).to.equal(401);
@@ -116,7 +114,7 @@ describe('THE USER ROUTES TEST MODULE =================================', functi
 
     describe('with an invalid username', () => {
       it('should return a 400 error', done => {
-        request.get(`${url}/api/signin`)
+        request.get(`${url}/api/login`)
         .auth('fakeUser', 'bruh')
         .end((err, res) => {
           expect(res.status).to.equal(400);
