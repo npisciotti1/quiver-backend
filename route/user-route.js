@@ -25,7 +25,11 @@ userRouter.post('/api/signup', jsonParser, function(req, res, next) {
   user.generatePasswordHash(password)
   .then( user => user.save() )
   .then( user => user.generateToken() )
-  .then( token => res.send(token))
+  .then( token => {
+    //added this bit so our frontend can create a new venue upon signup
+    let response = { token: token, userID: user._id};
+    res.send(response);
+  })
   .catch(next);
 });
 
