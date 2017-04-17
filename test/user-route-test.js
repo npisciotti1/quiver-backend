@@ -16,15 +16,13 @@ const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
   username: 'weasel',
   password: 'bruh',
-  email: 'testing@test.com',
-  isArtist: true
+  email: 'testing@test.com'
 };
 
 const newUser = {
   username: 'shazam',
   password: 'epiphany',
-  email: 'shabazz@lovesjazz.com',
-  isArtist: true
+  email: 'shabazz@lovesjazz.com'
 };
 
 describe('THE USER ROUTES TEST MODULE =================================', function() {
