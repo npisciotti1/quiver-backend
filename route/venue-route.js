@@ -31,7 +31,8 @@ venueRouter.get('/api/venue/:id', bearerAuth, function(req, res, next) {
   .catch( () => next(createError(404, 'not found')) );
 });
 
-venueRouter.get('/api/venue', bearerAuth, function(req, res, next) {
+
+venueRouter.get('/api/venue', function(req, res, next) {
   debug('GET: /api/venue');
 
   Venue.find({})
