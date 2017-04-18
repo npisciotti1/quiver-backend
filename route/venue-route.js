@@ -17,14 +17,12 @@ venueRouter.post('/api/venue', bearerAuth, jsonParser, function(req, res, next) 
 
   req.body.userID = req.user._id;
 
-  console.log('=========================');
-  console.log('req.body:', req.body);
-  console.log('=========================');
-
   new Venue(req.body)
   .save()
-  .then( venue => res.json(venue) )
-  .catch( () => next(createError(400, 'Im a dumb ol bad request')) );
+  .then( venue => {
+    res.json(venue);
+  })
+  .catch( () => next(createError(400, 'bad request')) );
 });
 
 venueRouter.get('/api/venue/:id', bearerAuth, function(req, res, next) {
