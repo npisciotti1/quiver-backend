@@ -31,9 +31,12 @@ gearRouter.put('/api/venue/:venueID/gear/:gearID', bearerAuth, jsonParser, funct
   debug('PUT /api/venue/:venueID/gear/:gearID');
 
   var query = { _id: `${req.params.gearID}` };
+  // var returnUpdated = true;
 
-  Gear.findOneAndUpdate(query, req.body, { new: true })
-  .then( gear => res.json(gear))
+  Gear.findOneAndUpdate(query, req.body, {new: true} )
+  .then( gear => {
+    res.json(gear);
+  })
   .catch( () => next(createError(404, 'not found')));
 });
 
