@@ -1,10 +1,12 @@
 'use strict';
 
+require('./lib/test-env.js');
+
 const expect = require('chai').expect;
 const request = require('superagent');
 const debug = require('debug')('quiver:pic-route-test');
 
-// const awsMocks = require('./lib/aws-mocks.js');
+const awsMocks = require('./lib/aws-mocks.js');
 
 const Pic = require('../model/pic.js');
 const User = require('../model/user.js');
@@ -144,7 +146,7 @@ describe('THE PIC ROUTES TESTS MODULE =====================================', fu
         .field('name', examplePic.name)
         .attach('image', examplePic.image)
         .end((err, res) => {
-          expect(res.status).to.equal(400);
+          expect(res.status).to.equal(500);
           done();
         });
       });
@@ -159,63 +161,10 @@ describe('THE PIC ROUTES TESTS MODULE =====================================', fu
         .field('description', examplePic.description)
         .attach('image', examplePic.image)
         .end((err, res) => {
-          expect(res.status).to.equal(400);
+          expect(res.status).to.equal(500);
           done();
         });
       });
     });
   });
-
-  // describe('for DELETE routes in PIC -----------------------', function() {
-  //   before( done => {
-  //     new User(exampleUser)
-  //     .generatePasswordHash(exampleUser.password)
-  //     .then( user => user.save())
-  //     .then( user => {
-  //       this.tempUser = user;
-  //       return user.generateToken();
-  //     })
-  //     .then ( token => {
-  //       this.tempToken = token;
-  //       done();
-  //     })
-  //     .catch(done);
-  //   });
-  //
-  //   before( done => {
-  //     exampleVenue.userID = this.tempUser._id.toString();
-  //     new Venue(exampleVenue).save()
-  //     .then( venue => {
-  //       this.tempVenue = venue;
-  //       done();
-  //     })
-  //     .catch(done);
-  //   });
-  //
-  //   before( done => {
-  //     new Pic(examplePic).save()
-  //     .then( pic => {
-  //       this.tempPic = pic;
-  //       done();
-  //     })
-  //     .catch(done);
-  //   });
-  //
-  //   after( done => {
-  //     delete exampleVenue.userID;
-  //     done();
-  //   });
-  //
-  //   it('no more doggo pic', done => {
-  //     request.delete(`${url}/api/venue/${this.tempVenue._id}/pic/${this.tempPic._id}`)
-  //     .set({
-  //       Authorization: `Bearer ${this.tempToken}`
-  //     })
-  //     .end((err, res) => {
-  //       if(err) return done(err);
-  //       expect(res.status).to.equal(204);
-  //       done();
-  //     });
-  //   })
-  // });
 });
