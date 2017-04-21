@@ -33,13 +33,22 @@ DELETE:
 ```/api/user```
 
 #### Venue
-Would you like to join our community as a new venue? POST to this url endpoint:
+Would you like to join our community as a new venue? POST to this url
+endpoint:
+
 ```/api/venue/```
-Would you like to GET the information for a specific venue? This is the endpoint for you:
+
+Would you like to GET the information for a specific venue? This is the
+endpoint for you:
+
 ```api/venue/:id```
+
 Need to update any information? PUT to this point:
+
 ```api/venue/:id```
+
 No longer jamming at a venue? DELETE here:
+
 ```api/venue/:id```
 
 
@@ -68,21 +77,35 @@ POST::
 ```/api/venue/:venueID/pic```
 
 #### SO WHO ARE WE?
-Shiv: Shiv is a software engineer and business consultant with an expertise in starts ups that is on the journey to find the intersection point between technology, art, and logic to create everlasting progressive changes and inspiration.
-Nikko: I’m a full-stack Javascript developer with a passion for technologies that  communicate. I build dynamic platforms for producers to reach their markets. With over 10 years in service-industry experience and management, I bring a consumer-based focus to development. (Also, to have a little fun with it).
-Will: A Full stack Javascript developer and who enjoys using new technology to find the creative and elegant solutions.
+
+Shiv: Shiv is a software engineer and business consultant with an expertise in start-ups that is on the journey to find the intersection point between technology, art, and logic to create everlasting progressive changes and inspiration.
+
+Nikko: As a software engineer, I bring simple and creative solutions that are widely accessible to the user. The deliverables I create are well-scrutinized, well-tested, and fit the need. I design dynamic applications that stem from a shared vision - a vision that is produced by a team. (Also, to have a little fun with it).
+
+Will: A Full-stack Javascript developer who enjoys using new technology to find the most creative and elegant solutions.
 
 
 #### Built Using:
 -"Express" - (expressjs.com)
+
 -"JsonWebToken" - (https://www.npmjs.com/package/json-web-token)
+
 -"Morgan" - (https://github.com/expressjs/morgan)
+
 -"Debug" - (https://github.com/visionmedia/debug)
+
 -"HTTP-Errors" - (Native Node Module)
+
 -"Body-Parser" - (Native Node Module)
+
 -"Cors" - (https://www.npmjs.com/package/cors)
+
 -"Del" - (https://www.npmjs.com/package/del)
+
 -"Bcrypt" - (https://www.npmjs.com/package/bcrypt-nodejs)
+
 -"Crypto" - (Native Node Module)
+
 -"HTTPie' - (https://httpie.org)
+
 -"Bluebird" - (http://bluebirdjs.com/)
