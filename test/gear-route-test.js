@@ -1,7 +1,5 @@
 'use strict';
 
-require('./lib/test-env.js');
-
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
@@ -9,19 +7,18 @@ const Promise = require('bluebird');
 
 const User = require('../model/user.js');
 const Venue = require('../model/venue.js');
-const Setup = require('../model/setup.js');
+const Gear = require('../model/gear.js');
 
 const awsMocks = require('./lib/aws-mocks.js');
 
-require('../server.js')
+require('../server.js');
 
 const url = `http://localhost:${process.env.PORT}`;
 
 const exampleUser = {
   username: 'weasel',
   password: 'bruh',
-  email: 'testing@test.com',
-  isArtist: true
+  email: 'testing@test.com'
 };
 
 const exampleVenue = {
@@ -29,8 +26,8 @@ const exampleVenue = {
   address: 'exampleAddress',
 };
 
-const exampleSetup = {
-  setup: {
+const exampleGear = {
+  gear: {
     audio: {
       mic: 'sm57',
       guitar: 'strato-caster',
@@ -39,8 +36,8 @@ const exampleSetup = {
   }
 };
 
-const newSetup = {
-  setup: {
+const newGear = {
+  gear: {
     audio: {
       instrument: 'saxophone'
     }
@@ -52,7 +49,6 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     Promise.all([
       User.remove({}),
       Venue.remove({}),
-      // Setup.remove({})
     ])
     .then( () => done() )
     .catch(done);
@@ -85,16 +81,16 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     describe('with a valid body', () => {
-      it('should return a setup', done => {
-        request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
-        .send(exampleSetup)
+      it('should return a gear', done => {
+        request.post(`${url}/api/venue/${this.tempVenue._id}/gear/`)
+        .send(exampleGear)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
         .end( (err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
-          expect(res.body.setup).to.be.an('object');
+          expect(res.body.gear).to.be.an('object');
           expect(res.body.venueID.toString()).to.equal(this.tempVenue._id.toString());
           done();
         });
@@ -103,7 +99,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
 
     describe('with a valid route and an invalid body', () => {
       it('should return a 400 error', done => {
-        request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
+        request.post(`${url}/api/venue/${this.tempVenue._id}/gear/`)
         .send()
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -117,8 +113,8 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
 
     describe('with an invalid ID and a valid body', () => {
       it('should return a 400 error', done => {
-        request.post(`${url}/api/venue/invalidID/setup/`)
-        .send(exampleSetup)
+        request.post(`${url}/api/venue/invalidID/gear/`)
+        .send(exampleGear)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
@@ -129,12 +125,12 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
       });
     });
 
-    it('not authorized to post in setup', done => {
-      request.post(`${url}/api/venue/${this.tempVenue._id}/setup/`)
+    it('not authorized to post in gear', done => {
+      request.post(`${url}/api/venue/${this.tempVenue._id}/gear/`)
       .set({
-        Authorization: `not happening`
+        Authorization: 'not happening'
       })
-      .send(exampleSetup)
+      .send(exampleGear)
       .end( (err, res) => {
         expect(res.status).to.equal(401);
         done();
@@ -163,30 +159,31 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
       new Venue(exampleVenue).save()
       .then( venue => {
         this.tempVenue = venue;
-        exampleSetup.venueID = venue._id;
+        exampleGear.venueID = venue._id;
         done();
       })
       .catch(done);
     });
 
     before( done => {
-      new Setup(exampleSetup).save()
-      .then( setup => {
-        this.tempSetup = setup;
+      new Gear(exampleGear).save()
+      .then( gear => {
+        this.tempGear = gear;
         done();
       })
       .catch(done);
     });
 
     after( done => {
-      delete exampleSetup.venueID;
+      delete exampleGear.venueID;
       delete exampleVenue.userID;
       done();
     });
 
     describe('if test is passed:', () => {
       it('successfully returned a SETUP', done => {
-        request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+        //deleted this: '/${this.tempGear._id}' because we modified our route
+        request.get(`${url}/api/venue/${this.tempVenue._id}/gear`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
@@ -194,15 +191,15 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
           if(err) return done(err);
           expect(res.status).to.equal(200);
           expect(res.body.venueID.toString()).to.equal(this.tempVenue._id.toString());
-          expect(res.body.setup).to.be.an('object');
+          expect(res.body.gear).to.be.an('object');
           done();
         });
       });
     });
 
-    describe('wrong setup id in url', () => {
+    describe('wrong gear id in url', () => {
       it('returns an error', done => {
-        request.get(`${url}/api/venue/${this.tempVenue._id}/setup/NOPE`)
+        request.get(`${url}/api/venue/${this.tempVenue._id}/gear/NOPE`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
@@ -215,25 +212,14 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
 
     describe('not authorized to get in SETUP', () => {
       it('returns a 401 error', done => {
-        request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+        //deleted this: '/${this.tempGear._id}' because we modified our route
+        request.get(`${url}/api/venue/${this.tempVenue._id}/gear`)
         .end((err, res) => {
           expect(res.status).to.equal(401);
           done();
         });
       });
     });
-
-    // it('setup id does not match', done=> {
-    //   exampleSetup.venueID = 'VAT IZ DIS'
-    //   request.get(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
-    //   .set({
-    //     Authorization: `Bearer ${this.tempToken}`
-    //   })
-    //   .end((err, res) => {
-    //     expect(res.status).to.equal(404);
-    //     done();
-    //   });
-    // });
   });
 
   describe('for PUT routes in SETUP ------------------------', function() {
@@ -263,55 +249,55 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     before( done => {
-      exampleSetup.venueID = this.tempVenue._id.toString();
-      new Setup(exampleSetup).save()
-      .then( setup => {
-        this.tempSetup = setup;
+      exampleGear.venueID = this.tempVenue._id.toString();
+      new Gear(exampleGear).save()
+      .then( gear => {
+        this.tempGear = gear;
         done();
       })
       .catch(done);
     });
 
     after( done => {
-      delete exampleSetup.venueID;
+      delete exampleGear.venueID;
       delete exampleVenue.userID;
       done();
     });
 
     it('for a successfully updated SETUP', done => {
-      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      request.put(`${url}/api/venue/${this.tempVenue._id}/gear/${this.tempGear._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
-      .send(newSetup)
+      .send(newGear)
       .end((err, res) => {
         if(err) return done(err);
         expect(res.status).to.equal(200);
         expect(res.body.venueID).to.equal(this.tempVenue._id.toString());
-        expect(res.body.setup).to.be.an('object');
-        expect(res.body.setup).to.deep.equal(newSetup.setup);
+        expect(res.body.gear).to.be.an('object');
+        expect(res.body.gear).to.deep.equal(newGear.gear);
         done();
       });
     });
 
-    it('did not update setup', done => {
-      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+    it('did not update gear', done => {
+      request.put(`${url}/api/venue/${this.tempVenue._id}/gear/${this.tempGear._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body.setup).to.not.equal(newSetup.setup);
+        expect(res.body.gear).to.not.equal(newGear.gear);
         done();
       });
     });
 
     it('sent to wrong endpoint', done=> {
-      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/YOUSHALLNOTPASS`)
+      request.put(`${url}/api/venue/${this.tempVenue._id}/gear/YOUSHALLNOTPASS`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
-      .send(newSetup)
+      .send(newGear)
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
@@ -319,11 +305,11 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     it('was an unauthorized request', done => {
-      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      request.put(`${url}/api/venue/${this.tempVenue._id}/gear/${this.tempGear._id}`)
       .set({
-        Authorization: `look! a wild ratata has appeared`
+        Authorization: 'look! a wild ratata has appeared'
       })
-      .send(newSetup)
+      .send(newGear)
       .end((err, res) => {
         expect(res.status).to.equal(401);
         done();
@@ -331,12 +317,12 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     it('venue ID does not match', done => {
-      newSetup.venueID = 'WRONG ONE';
-      request.put(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      newGear.venueID = 'WRONG ONE';
+      request.put(`${url}/api/venue/${this.tempVenue._id}/gear/${this.tempGear._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
-      .send(newSetup)
+      .send(newGear)
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
@@ -371,17 +357,17 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     before( done => {
-      exampleSetup.venueID = this.tempVenue._id.toString();
-      new Setup(exampleSetup).save()
-      .then( setup => {
-        this.tempSetup = setup;
+      exampleGear.venueID = this.tempVenue._id.toString();
+      new Gear(exampleGear).save()
+      .then( gear => {
+        this.tempGear = gear;
         done();
       })
       .catch(done);
     });
 
-    it('should successfully delete a setup', done => {
-      request.delete(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+    it('should successfully delete a gear', done => {
+      request.delete(`${url}/api/venue/${this.tempVenue._id}/gear/${this.tempGear._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
@@ -393,7 +379,7 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     it('invalid end point', done => {
-      request.delete(`${url}/api/venue/${this.tempVenue._id}/setup/lame`)
+      request.delete(`${url}/api/venue/${this.tempVenue._id}/gear/lame`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
@@ -404,9 +390,9 @@ describe('THE SETUP ROUTES TESTS MODULE ===============================', functi
     });
 
     it('unauthorized delete request for SETUP', done => {
-      request.delete(`${url}/api/venue/${this.tempVenue._id}/setup/${this.tempSetup._id}`)
+      request.delete(`${url}/api/venue/${this.tempVenue._id}/gear/${this.tempGear._id}`)
       .set({
-        Authorization: `where is the love`
+        Authorization: 'where is the love'
       })
       .end((err, res) => {
         expect(res.status).to.equal(401);

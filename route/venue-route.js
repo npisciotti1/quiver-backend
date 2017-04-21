@@ -19,7 +19,9 @@ venueRouter.post('/api/venue', bearerAuth, jsonParser, function(req, res, next) 
 
   new Venue(req.body)
   .save()
-  .then( venue => res.json(venue) )
+  .then( venue => {
+    res.json(venue);
+  })
   .catch( () => next(createError(400, 'bad request')) );
 });
 
@@ -29,6 +31,15 @@ venueRouter.get('/api/venue/:id', bearerAuth, function(req, res, next) {
   Venue.findById(req.params.id)
   .then( venue => res.json(venue) )
   .catch( () => next(createError(404, 'not found')) );
+});
+
+
+venueRouter.get('/api/venue', function(req, res, next) {
+  debug('GET: /api/venue');
+
+  Venue.find({})
+  .then( venue => res.json(venue))
+  .catch( () => next(createError(404, 'not found')));
 });
 
 venueRouter.put('/api/venue/:id', bearerAuth, jsonParser, function(req, res, next) {

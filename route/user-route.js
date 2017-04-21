@@ -25,16 +25,18 @@ userRouter.post('/api/signup', jsonParser, function(req, res, next) {
   user.generatePasswordHash(password)
   .then( user => user.save() )
   .then( user => user.generateToken() )
-  .then( token => res.send(token))
+  .then( token => {
+    res.send(token);
+  })
   .catch(next);
 });
 
-userRouter.get('/api/signin', basicAuth, function(req, res, next) {
-  debug('GET: /api/signin');
+userRouter.get('/api/login', basicAuth, function(req, res, next) {
+  debug('GET: /api/login');
 
   User.findOne({ username: req.auth.username })
   .then( user => {
-    if( user === null ) return Promise.reject(createError(400, 'bad request'))
+    if( user === null ) return Promise.reject(createError(400, 'bad request'));
     return user;
   })
   .then( user => user.comparePasswordHash(req.auth.password))
@@ -48,7 +50,7 @@ userRouter.put('/api/user', bearerAuth, function(req, res, next) {
 
   User.findByIdAndUpdate(req.user._id, req.body, { new: true})
   .then( user => res.json(user) )
-  .catch( () => next(createError(404, 'not found')))
+  .catch( () => next(createError(404, 'not found')));
 });
 
 userRouter.delete('/api/user', bearerAuth, function(req, res, next) {
@@ -58,5 +60,5 @@ userRouter.delete('/api/user', bearerAuth, function(req, res, next) {
   .then( () => {
     return next(res.status(204).send());
   })
-  .catch( (err) => next(createError(404, 'not found')));
-})
+  .catch( () => next(createError(404, 'not found')));
+});

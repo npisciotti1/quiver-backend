@@ -1,7 +1,5 @@
 'use strict';
 
-require('./lib/test-env.js');
-
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
@@ -19,8 +17,7 @@ const url = `http://localhost:${process.env.PORT}`;
 const exampleUser = {
   username: 'example user',
   password: 'example password',
-  email: 'test@test.com',
-  isArtist: true
+  email: 'test@test.com'
 };
 
 const exampleVenue = {
@@ -106,12 +103,12 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
         request.post(`${url}/api/venue`)
         .send(exampleVenue)
         .set({
-          Authorization: `NOT TODAY YOUNG ONE`
+          Authorization: 'NOT TODAY YOUNG ONE'
         })
         .end((err, res) => {
           expect(res.status).to.equal(401);
           done();
-        })
+        });
       });
     });
   });
@@ -166,7 +163,7 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
         Authorization: `Bearer ${this.tempToken}`
       })
       .end((err, res) => {
-        expect(res.status).to.equal(404)
+        expect(res.status).to.equal(404);
         done();
       });
     });
@@ -174,10 +171,10 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
     it('should return an error for not being authorized', done=> {
       request.get(`${url}/api/venue/${this.tempVenue._id}`)
       .set({
-        Authorization: `not going through my dude`
+        Authorization: 'not going through my dude'
       })
       .end((err, res) => {
-        expect(res.status).to.equal(401)
+        expect(res.status).to.equal(401);
         done();
       });
     });
@@ -219,7 +216,7 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).to.equal(200);
-        expect(res.body.userID).to.equal(this.tempUser._id.toString())
+        expect(res.body.userID).to.equal(this.tempUser._id.toString());
         expect(res.body.name).to.equal(newVenue.name);
         expect(res.body.address).to.equal(newVenue.address);
         done();
@@ -227,7 +224,6 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
     });
 
     it('did not send the UPDATED venue correctly', done => {
-      let newVenue = { name: 'BADBOY', address: 'IS A STRAIGHT TITAN'};
       request.put(`${url}/api/venue/${this.tempVenue._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
@@ -256,7 +252,7 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
       let newVenue = { name: 'more', address: 'and MORE'};
       request.put(`${url}/api/venue/${this.tempVenue.id}`)
       .set({
-        Authorization: `no fly zone`
+        Authorization: 'no fly zone'
       })
       .send(newVenue)
       .end((err, res) => {
@@ -302,7 +298,7 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
         done();
       })
       .catch(done);
-    })
+    });
 
     it('should successfully delete a venue', done => {
       request.delete(`${url}/api/venue/${this.tempVenue._id}`)
@@ -330,7 +326,7 @@ describe('THE VENUE ROUTES TESTS MODULE ===============================', functi
     it('not authorized to delete', done => {
       request.delete(`${url}/api/venue/${this.tempVenue._id}`)
       .set({
-        Authorization: `y u no like dis venue`
+        Authorization: 'y u no like dis venue'
       })
       .end((err, res) => {
         expect(res.status).to.equal(401);
