@@ -9,7 +9,7 @@ const User = require('../model/user.js');
 const Venue = require('../model/venue.js');
 const Gear = require('../model/gear.js');
 
-// const awsMocks = require('./lib/aws-mocks.js');
+const awsMocks = require('./lib/aws-mocks.js');
 
 require('../server.js');
 

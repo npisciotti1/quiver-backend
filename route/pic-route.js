@@ -71,11 +71,11 @@ picRouter.post('/api/venue/:venueID/pic', bearerAuth, upload.single('image'), fu
   .catch( err => next(err));
 });
 
-picRouter.delete('api/venue/:venueID/pic/:picID', bearerAuth, function(req, res, next) {
-  debug('DELETE: /api/venue/venueID/pic/:picID');
-  console.log('we hit our DELETE route');
-
-  Pic.findbyIdAndRemove(req.params.picID)
-  .then( () => res.status(204).send())
-  .catch( () => next(createError(404, 'not found')));
-});
+// picRouter.delete('api/venue/:venueID/pic/:picID', bearerAuth, function(req, res, next) {
+//   debug('DELETE: /api/venue/venueID/pic/:picID');
+//   console.log('we hit our DELETE route');
+//
+//   Pic.findbyIdAndRemove(req.params.picID)
+//   .then( () => res.status(204).send())
+//   .catch( () => next(createError(404, 'not found')));
+// });

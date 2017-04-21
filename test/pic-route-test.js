@@ -1,10 +1,12 @@
 'use strict';
 
+require('./lib/test-env.js');
+
 const expect = require('chai').expect;
 const request = require('superagent');
 const debug = require('debug')('quiver:pic-route-test');
 
-// const awsMocks = require('./lib/aws-mocks.js');
+const awsMocks = require('./lib/aws-mocks.js');
 
 const Pic = require('../model/pic.js');
 const User = require('../model/user.js');
@@ -144,7 +146,7 @@ describe('THE PIC ROUTES TESTS MODULE =====================================', fu
         .field('name', examplePic.name)
         .attach('image', examplePic.image)
         .end((err, res) => {
-          expect(res.status).to.equal(400);
+          expect(res.status).to.equal(500);
           done();
         });
       });
@@ -159,7 +161,7 @@ describe('THE PIC ROUTES TESTS MODULE =====================================', fu
         .field('description', examplePic.description)
         .attach('image', examplePic.image)
         .end((err, res) => {
-          expect(res.status).to.equal(400);
+          expect(res.status).to.equal(500);
           done();
         });
       });

@@ -7,7 +7,7 @@ const Promise = require('bluebird');
 
 const User = require('../model/user.js');
 
-// const awsMocks = require('./lib/aws-mocks.js');
+const awsMocks = require('./lib/aws-mocks.js');
 
 require('../server.js');
 
