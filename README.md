@@ -1,9 +1,5 @@
 # QUIVER
-Welcome to our documentation! Quiver is an platform that will allow artists and venue owners to communicate in a direct fashion -- owners can display their audio specs so that artists and bands have a better understanding of how they should prepare accordingly with their gear in order for the customers and audience to have the best experience possible.
-
-So you guys want to enter an empathetic musical realm with some venues and jams eh?
-
-DOPE.
+Quiver is a platform that will allow artists and venue owners to communicate in a direct fashion. Venue owners can display their audio specs so that artists and bands have a better understanding of how they should prepare for an upcoming gig.
 
 #### PROBLEM DOMAIN:
 As a performing artist, a very frustrating problem can often occur. When preparing for a performance at a new venue, it can be very difficult to find out exactly what kind of gear/PA is available for use. For a band that has a very specific sound to create, they need to know what equipment is available, and what equipment they should bring.
@@ -12,9 +8,7 @@ As a performing artist, a very frustrating problem can often occur. When prepari
 #### BUILD:
 Using NodeJS/Express/MongoDB, created an API that will serve a front-end application that allows Bars and Venues to create a profile that will display their house PA. Each ‘venue’ model will have its own correlating ‘gear’ model that houses all their listed gear. Venues will have the option of modifying and adding gear at any time. Users (artists) can view the listed gear in preparation for a show.
 
-Please, enjoy yourself and play around around with our APIs as you would like, we have left everything as open source in order for all to enjoy and benefit from.
-
-All that is required is to install a list of packages, which can be done by simply copying in these successive commands in your terminal window that contains our repo that you have cloned down.
+To get started, simply use this command in your Terminal:
 
 ```js
 npm i
