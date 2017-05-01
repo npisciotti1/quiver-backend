@@ -28,11 +28,21 @@ venueRouter.post('/api/venue', bearerAuth, jsonParser, function(req, res, next) 
 venueRouter.get('/api/venue/:id', bearerAuth, function(req, res, next) {
   debug('GET: /api/venue/:id');
 
+
   Venue.findById(req.params.id)
   .then( venue => res.json(venue) )
   .catch( () => next(createError(404, 'not found')) );
 });
 
+venueRouter.get('/api/user/:id/venue', bearerAuth, function(req, res, next) {
+  debug('GET: /api/user/:id/venue');
+
+  console.log('route was hit');
+
+  Venue.findOne({'userID': req.params.id})
+  .then( venue => res.json(venue) )
+  .catch( () => next(createError(404, 'not found')) );
+});
 
 venueRouter.get('/api/venue', function(req, res, next) {
   debug('GET: /api/venue');
