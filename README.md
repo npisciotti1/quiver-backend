@@ -1,83 +1,97 @@
 # QUIVER
-Quiver is a platform that will allow artists and venue owners to communicate in a direct fashion. Venue owners can display their audio specs so that artists and bands have a better understanding of how they should prepare for an upcoming gig.
-
-#### PROBLEM DOMAIN:
-As a performing artist, a very frustrating problem can often occur. When preparing for a performance at a new venue, it can be very difficult to find out exactly what kind of gear/PA is available for use. For a band that has a very specific sound to create, they need to know what equipment is available, and what equipment they should bring.
+Quiver is a web-based application that allows venue owners to list house-PA and audio specs. Venue owners can display and maintain their "gear" so that artists and bands have a better understanding of how they should prepare for an upcoming gig.
 
 
-#### BUILD:
-Using NodeJS/Express/MongoDB, created an API that will serve a front-end application that allows Bars and Venues to create a profile that will display their house PA. Each ‘venue’ model will have its own correlating ‘gear’ model that houses all their listed gear. Venues will have the option of modifying and adding gear at any time. Users (artists) can view the listed gear in preparation for a show.
+#### Overview:
 
-To get started, simply use this command in your Terminal:
+
+To get started, first install the necessary packages to run locally:
 
 ```js
 npm i
 ```
 
-## OUR MODELS
+## OUR MODELS (schemas)
 
 #### User
-POST:
-```/api/signup```
-GET:
-```/api/login```
-PUT:
-```/api/user```
-DELETE:
-```/api/user```
 
 #### Venue
-Would you like to join our community as a new venue? POST to this url
-endpoint:
+
+#### Gear
+
+
+## Routes
+
+#### User (authentication routes):
+POST:
+
+```/api/signup```
+
+GET:
+
+```/api/login```
+
+
+
+#### Venue
+Upon signup, a new venue is istantiated. I.e. a ```POST``` request is made. This creates a one-to-one relationship between venues and users.
+
+POST:
 
 ```/api/venue/```
 
-Would you like to GET the information for a specific venue? This is the
-endpoint for you:
-
-```api/venue/:id```
-
-Need to update any information? PUT to this point:
-
-```api/venue/:id```
-
-No longer jamming at a venue? DELETE here:
-
-```api/venue/:id```
-
-
-##### Artist
-POST:
-```/api/artist/```
 GET:
-```api/artist/:id```
-PUT:
-```api/artist/:id```
-DELETE:
-```api/artist/:id```
 
-##### Gear
+(fetch all)
+
+This route allows for fetching all available venues - this is happening in our "venue-search" view for the frontend.
+
+```/api/venue```
+
+(fetch one)
+This route facilitates two scenarios in our app. First, upon logging in to your account, our app automatically grabs your corresponding venue schema. Second, upon choosing a searched venue, the corresponding venue would be fetched to display on the "public dashboard."
+
+```api/venue/:id```
+
+PUT:
+
+When updating your profile information, your route would ```PUT``` here:
+
+```api/venue/:id```
+
+
+
+
+#### Gear
 POST:
+
+Upon signup, a gear schema is automatically instantiated that is relational to a single venue. This creates a one-to-one relationship between our venues and gear.
+
 ```/api/venue/:venueID/gear```
+
 GET:
-```/api/venue/:venueID/gear/:gearID```
-PUT:
-```/api/venue/:venueID/gear/:gearID```
-DELETE:
+
+Similar to our fetch functionality for Venues, there are two ways we ```GET``` our gear. First upon login - second upon choosing a searched venue.
+
 ```/api/venue/:venueID/gear/:gearID```
 
-#### Pic
-POST::
-```/api/venue/:venueID/pic```
+PUT:
+
+When editing your displayed gear from the frontend, you would be hitting the following route.
+
+```/api/venue/:venueID/gear/:gearID```
+
+
 
 #### SO WHO ARE WE?
 
-Shiv: Shiv is a software engineer and business consultant with an expertise in start-ups that is on the journey to find the intersection point between technology, art, and logic to create everlasting progressive changes and inspiration.
 
 Nikko: As a software engineer, I bring simple and creative solutions that are widely accessible to the user. The deliverables I create are well-scrutinized, well-tested, and fit the need. I design dynamic applications that stem from a shared vision - a vision that is produced by a team. (Also, to have a little fun with it).
 
 Will: A Full-stack Javascript developer who enjoys using new technology to find the most creative and elegant solutions.
 
+
+Shiv: Shiv is a software engineer and business consultant with an expertise in start-ups that is on the journey to find the intersection point between technology, art, and logic to create everlasting progressive changes and inspiration.
 
 #### Built Using:
 -"Express" - (expressjs.com)
